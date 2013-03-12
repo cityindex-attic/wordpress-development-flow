@@ -1,2 +1,0 @@
-pygments:     true
-exclude:       ["Makefile", "README.md", "less", "node_modules", "package.json"]

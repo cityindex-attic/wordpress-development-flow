@@ -19,7 +19,7 @@ Have a bug or a feature request? [Please open a new issue](https://github.com/ci
 
 ## Brief history
 
-Text here...
+[Murally board that started the project](http://mrl.li/ZFs4qk)
 
 ## Copyright and license
 

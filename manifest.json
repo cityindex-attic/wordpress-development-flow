@@ -1,0 +1,15 @@
+{
+  "manifest_version": 4,
+  "name": "remote-development-boilerplate",
+  "version": "0.1",
+  "minimum_chrome_version": "23",
+  "icons": {
+    "16": "icon_16.png",
+    "128": "icon_128.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["main.js"]
+    }
+  }
+}

@@ -1,16 +1,32 @@
 {
-    "name": "preboot"
-  , "description": "A collection of LESS mixins and variables for writing better CSS."
-  , "version": "2.0.0"
-  , "keywords": ["preboot", "css", "less"]
-  , "homepage": "http://getpreboot.com/"
-  , "author": "Mark Otto"
-  , "repository": {
-      "type": "git"
-    , "url": "https://github.com/mdo/preboot.git"
-  }
-  , "license": "MIT"
-  , "devDependencies": {
-    "recess": "1.1.6"
+  "name": "remote-development-boilerplate",
+  "description": "Patterns and practices for remote teams to collaborate on projects",
+  "version": "0.0.1",
+  "keywords": [
+    "remote",
+    "boilderplate",
+    "best-practices"
+  ],
+  "homepage": "https://github.com/cityindex/remote-development-boilerplate/",
+  "author": "Ryan Holder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cityindex/remote-development-boilerplate.git"
+  },
+  "license": "APACHE",
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "recess": "1.1.6",
+    "grunt": "~0.4.0",
+    "grunt-contrib-jshint": "~0.1.0",
+    "grunt-contrib-clean": "~0.4.0a",
+    "grunt-contrib-nodeunit": "~0.1.0",
+    "grunt-contrib-watch": "~0.3.1"
   }
 }

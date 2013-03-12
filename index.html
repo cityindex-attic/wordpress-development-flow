@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>remote-development-boilerplate</title>
+    <link href='http://fonts.googleapis.com/css?family=Bitter:400,700' rel='stylesheet' type='text/css'>
+    <link href="assets/stylesheets/main.css" rel="stylesheet">    
+</head>
+<body>
+    <header class="header">
+        <h1>- Remote Development Boilerplate -</h1>
+        <strong>Development console</strong>
+    </header>
+    <div class="pane">
+        <section id="commands">
+            <button id="runTests">Run Tests</button>
+        </section>
+        <section id="output">
+            <textarea id="outputTextarea" cols=60 rows=10></textarea>
+        </section>
+    </div>
+    <script src="vendor/jquery.js"></script>
+    <script src="vendor/jquery.activity-indicator-1.0.0.js"></script>
+    <script src="assets/javascripts/migrate.js"></script>
+    <script src="assets/javascripts/filemanager.js"></script>
+    <script src="assets/javascripts/peach.js"></script>
+    <script src="index.html.js"></script>
+</body>
+</html>

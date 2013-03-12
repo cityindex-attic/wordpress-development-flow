@@ -2,7 +2,7 @@
 
 Remote Development Boilerplate is a proposed method of a development workflow. Use it how you see fit.
 
-## Author
+## Project Lead
 
 **Ryan Holder**
 

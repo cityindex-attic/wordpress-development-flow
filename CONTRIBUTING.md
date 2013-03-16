@@ -37,7 +37,7 @@ repository. Good bug reports are extremely helpful - thank you!
    reported.
 
 2. **Check if the issue has been fixed** &mdash; try to reproduce it using the
-   latest `master` or development branch in the repository.
+   latest `master` branch in the repository.
 
 3. **Isolate the problem** &mdash; ideally create a [reduced test
    case](http://css-tricks.com/6263-reduced-test-cases/) and a live example.

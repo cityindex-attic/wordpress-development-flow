@@ -12,6 +12,6 @@ DEPLOY_NAME="$(parse_git_branch)-rdb"
 stackato target https://api.stackato.cil.stack.me
 stackato login david.laing@labs.cityindex.com --pass $STACKATO_PASSWORD
 stackato push $DEPLOY_NAME --no-prompt
-[ $? -ne 0 ]; then
+if [ $? -ne 0 ]; then
     stackato update $DEPLOY_NAME --no-prompt
 fi

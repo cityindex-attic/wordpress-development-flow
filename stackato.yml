@@ -1,0 +1,7 @@
+instances: 1
+framework:
+  type: node
+mem: 64
+processes:
+  web: node http-server.js &
+ignores: [".git", "node_modules"]

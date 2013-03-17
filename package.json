@@ -19,7 +19,12 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
+    "start": "node http-server.js",
     "test": "grunt test"
+  },
+  "dependencies": {
+    "connect": "~2.7.2",
+    "underscore": "~1.4.4"
   },
   "devDependencies": {
     "recess": "1.1.6",

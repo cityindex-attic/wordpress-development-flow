@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ -z "$STACKATO_PASSWORD" ] then
+if [ -z "$STACKATO_PASSWORD" ]; then
 	echo "STACKATO_PASSWORD must be defined"
 fi
 

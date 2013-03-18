@@ -19,7 +19,12 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
+    "start": "node http-server.js",
     "test": "grunt test"
+  },
+  "dependencies": {
+    "connect": "~2.7.2",
+    "underscore": "~1.4.4"
   },
   "devDependencies": {
     "recess": "1.1.6",
@@ -27,6 +32,7 @@
     "grunt-contrib-jshint": "~0.1.0",
     "grunt-contrib-clean": "~0.4.0a",
     "grunt-contrib-nodeunit": "~0.1.0",
-    "grunt-contrib-watch": "~0.3.1"
+    "grunt-contrib-watch": "~0.3.1",
+    "shelljs":"~0.1.2"
   }
 }

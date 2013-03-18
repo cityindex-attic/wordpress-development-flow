@@ -13,9 +13,16 @@ Remote Development Boilerplate is a proposed method of a development workflow. U
 
 Text here..
 
-## Bugs and feature requests
+## Contributing to this project (bug reports, feature requests, pull requests)
 
-Have a bug or a feature request? [Please open a new issue](https://github.com/cityindex/remote-development-boilerplate/issues). Before opening any issue, please search for existing issues and read the [Issue Guidelines](https://github.com/necolas/issue-guidelines), written by [Nicolas Gallagher](https://github.com/necolas/).
+Have a bug, feature request or pull request? [Please open a new issue](https://github.com/cityindex/remote-development-boilerplate/issues).
+Anyone and everyone is welcome to contribute, but please take a moment to
+review the [guidelines for contributing](CONTRIBUTING.md) to make this process
+easy and effective for everyone, in particular:
+
+* [Reporting bugs](CONTRIBUTING.md#reporting-bugs)
+* [Requesting features](CONTRIBUTING.md#requesting-features)
+* [Submitting pull requests](CONTRIBUTING.md#submitting-pull-requests)
 
 ## Brief history
 

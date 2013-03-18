@@ -1,4 +1,7 @@
 /*global module:false*/
+
+var shell = require('shelljs');
+
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -18,7 +21,8 @@ module.exports = function(grunt) {
         boss: true,
         eqnull: true,
         globals: {
-          jQuery: true
+          jQuery: true,
+          require: true
         }
       },
       gruntfile: {
@@ -47,6 +51,38 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+
+  grunt.registerTask('deploy', 'Deploy to Stackato', function(deployName, username, password) {
+    var stackatoBaseUri = "stackato.cil.stack.me";
+
+    if (deployName === undefined) {
+      grunt.log.error('You must pass a deployName -> grunt deploy:your-deploy-name:username:password');
+      return false;
+    } 
+    if (username === undefined) {
+      grunt.log.error('You must pass a username -> grunt deploy:your-deploy-name:username:password');
+      return false;
+    } 
+    if (password === undefined) {
+      grunt.log.error('You must pass a password -> grunt deploy:your-deploy-name:username:password');
+      return false;
+    } 
+    if (!shell.which('stackato')) {
+      grunt.log.error('stackato must be in your path');
+      return false;
+    }
+    grunt.log.writeln('deploying to url: http://' + deployName + '.' + stackatoBaseUri );
+    shell.exec('stackato target https://api.' + stackatoBaseUri);
+    shell.exec('stackato login ' + username + ' --pass ' + password);
+
+    //Push or update
+    if (shell.exec('stackato push '+ deployName + ' --no-prompt').code !== 0) {
+      shell.exec('stackato update '+ deployName + ' --no-prompt');
+    }
+
+    grunt.log.ok('Deployment successful'); 
+
+  });
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'nodeunit']);

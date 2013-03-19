@@ -32,6 +32,18 @@ module.exports = function(grunt) {
         src: ['lib/**/*.js', 'test/**/*.js']
       }
     },
+    recess: {
+        dist: {
+            options: {
+                compile: true
+            },
+            files: {
+                'assets/stylesheets/docs-compiled.css': [
+                    'assets/stylesheets/less/docs.less'
+                ]
+            }
+        }
+    },
     nodeunit: {
       files: ['test/**/*_test.js']
     },
@@ -48,6 +60,7 @@ module.exports = function(grunt) {
   });
 
   // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-recess');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -85,6 +98,6 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'nodeunit']);
+  grunt.registerTask('default', ['jshint', 'recess']);
 
 };

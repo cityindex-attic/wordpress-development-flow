@@ -1,17 +1,18 @@
 {
-  "name": "remote-development-boilerplate",
-  "description": "Patterns and practices for remote teams to collaborate on projects",
+  "name": "pressupbox-development-boilerplate",
+  "description": "Patterns and practices for teams to collaborating on WordPress projects ",
   "version": "0.0.1",
   "keywords": [
-    "remote",
+    "wordpress",
+    "development",
     "boilderplate",
     "best-practices"
   ],
-  "homepage": "https://github.com/cityindex/remote-development-boilerplate/",
-  "author": "Ryan Holder",
+  "homepage": "https://github.com/mrdavidlaing/pressupbox-development-boilerplate/",
+  "author": "David Laing",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cityindex/remote-development-boilerplate.git"
+    "url": "https://github.com/mrdavidlaing/pressupbox-development-boilerplate.git"
   },
   "license": "APACHE",
   "main": "Gruntfile.js",

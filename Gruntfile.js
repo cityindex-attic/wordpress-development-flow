@@ -38,8 +38,8 @@ module.exports = function(grunt) {
                 compile: true
             },
             files: {
-                'assets/stylesheets/docs-compiled.css': [
-                    'assets/stylesheets/less/docs.less'
+                'dist/assets/stylesheets/docs-compiled.css': [
+                    'src/assets/stylesheets/docs.less'
                 ]
             }
         }

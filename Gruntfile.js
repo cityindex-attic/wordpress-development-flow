@@ -1,6 +1,11 @@
 /*global module:false*/
 
-var shell = require('shelljs');
+var shell = require('shelljs'),
+    path = require('path'),
+    lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet,
+    folderMount = function folderMount(connect, point) {
+      return connect['static'](path.resolve(point));
+    };
 
 module.exports = function(grunt) {
 
@@ -47,14 +52,45 @@ module.exports = function(grunt) {
     nodeunit: {
       files: ['test/**/*_test.js']
     },
-    watch: {
+    // Before generating any new files, remove any previously-created files.
+    clean: {
+      test: ['dist']
+    },
+    copy: {
+      main: {
+        files: [
+          { 
+            cwd: 'src/',         //base folder for src
+            expand: true,
+            src: [ 
+              '**',          //everything
+              '!**/*.less'   //except *.less
+            ],
+            dest: 'dist/'
+          }        
+        ]
+      }
+    },
+    connect: {
+      livereload: {
+        options: {
+          port: 4567,
+          base: 'dist/',
+          middleware: function(connect, options) {
+            return [lrSnippet, folderMount(connect, options.base)];
+          }
+        }
+      }
+    },
+    // Watches for file changes, and trigger tasks
+    regarde: {
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
         tasks: ['jshint:gruntfile']
       },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'nodeunit']
+      watch_src: {
+        files: 'src/**',
+        tasks: ['default', 'livereload']
       }
     }
   });
@@ -63,7 +99,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-recess');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-regarde');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-livereload');
 
   grunt.registerTask('deploy', 'Deploy to Stackato', function(deployName, username, password) {
     var stackatoBaseUri = "stackato.cil.stack.me";
@@ -97,7 +137,10 @@ module.exports = function(grunt) {
 
   });
 
+  grunt.registerTask('build', ['jshint', 'clean', 'copy', 'recess']);
+  grunt.registerTask('dev-server', ['build', 'livereload-start', 'connect', 'regarde']);
+ 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'recess']);
+  grunt.registerTask('default', ['build']);
 
 };

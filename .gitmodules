@@ -1,0 +1,6 @@
+[submodule "tools/whippet"]
+	path = tools/whippet
+	url = https://github.com/dxw/whippet.git
+[submodule "tools/wp-cli"]
+	path = tools/wp-cli
+	url = https://github.com/wp-cli/wp-cli.git

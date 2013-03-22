@@ -68,7 +68,30 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('deploy', 'Deploy to Stackato', function(deployName, username, password) {
+  grunt.registerTask('compile', 'Compile src/ into dist/', function() {
+    shell.exec('wp core download --path=dist/');
+    
+    //fix for hiphop -> http://www.hiphop-php.com/wp/?p=113
+    var replace = "define('OBJECT', 'OBJECT');\ndefine('Object', 'OBJECT');\ndefine('object', 'OBJECT');";
+    shell.sed('-i', "define( 'OBJECT', 'OBJECT', true );", replace, 'dist/wp-includes/wp-db.php');
+    
+  });
+
+  grunt.registerTask('dev-server', 'Serve site at http://localhost:4567' , function() {
+
+      shell.rm('dist/wp-config.php');
+      shell.exec('wp core config --dbname=wordpress --dbuser=root --dbpass=secret_password --path=dist/');
+
+      shell.exec('mysqladmin -uroot -psecret_password create wordpress');
+
+      var config = 
+        "$whippet->options['wp-content'] = dirname(__FILE__) . '/wp-content';\n";
+      shell.sed('-i', '/**#@-*/', config, 'dist/wp-config.php');
+
+      shell.exec('whippet dist/ -i 0.0.0.0 -p 4567');
+  });
+
+  grunt.registerTask('release', 'Deploy to Stackato', function(deployName, username, password) {
     var stackatoBaseUri = "stackato.cil.stack.me";
 
     if (deployName === undefined) {
@@ -100,10 +123,10 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['jshint', 'clean', 'copy']);
-  grunt.registerTask('server', ['build']);
+  grunt.registerTask('build', ['jshint', 'clean', 'compile', 'copy']);
+  grunt.registerTask('run', ['build', 'dev-server']);
  
   // Default task.
-  grunt.registerTask('default', ['build']);
+  grunt.registerTask('default', ['build'] );
 
 };

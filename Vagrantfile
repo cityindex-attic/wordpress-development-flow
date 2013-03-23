@@ -52,7 +52,7 @@ echo "mysql:\t$(mysql --version)"
 
 if [ ! -f /usr/bin/git ]; then
   echo "Installing git"
-  sudo apt-get install git-core-y
+  sudo apt-get install git-core -y
 fi
 echo "git:\t$(git --version)"
 

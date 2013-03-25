@@ -22,8 +22,10 @@ Use it how you see fit.
 1.  Clone this repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64)
 1.  `vagrant up` -> get a :coffee:
 1.  `vagrant halt` `vagrant up` -> answer StackOverflow questions
-1.  `vagrant ssh`
-1.  `cd /vagrant && npm install`
+1.  `vagrant ssh` -> You're now in a sandbox environment on the VM which simulates the Stackato deployment environment
+1.  `npm install`
+1.  `grunt run` -> This will compile your app and launch a dev server that you can access via http://localhost:4567 on your Dev machine
+1.  TODO Any changes you make on your dev machine will be automatically copied to your vagrant VM
 
 ## Contributing to this project (bug reports, feature requests, pull requests)
 

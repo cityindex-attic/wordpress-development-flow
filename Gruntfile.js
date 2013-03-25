@@ -62,8 +62,8 @@ module.exports = function(grunt) {
   });
 
   //TODO - this doesn't seem to detect added or deleted events.
-  grunt.event.on('regarde:watch_src:file', function (status, file, tasks, spawn) {
-    dist_file = file.replace('src','dist'); 
+  grunt.event.on('regarde:watch_src:file', function (status, file) {
+    var dist_file = file.replace('src','dist'); 
     grunt.log.writeln(file + ' has ' + status + ' -> copying to ' + dist_file);
 
     grunt.file.copy(file, dist_file);
@@ -77,7 +77,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('compile', 'Compile src/ into dist/', function() {
+  grunt.registerTask('compile', ['copy','compile-buildpack']);
+  grunt.registerTask('compile-buildpack', 'Compile src/ into dist/', function() {
     shell.exec('~/.mason/buildpacks/wordpress/bin/compile /vagrant/dist');    
   });
 
@@ -118,7 +119,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['jshint', 'clean', 'compile', 'copy']);
+  grunt.registerTask('build', ['jshint', 'clean', 'compile']);
   grunt.registerTask('run', ['dev-server', 'regarde']);
  
   // Default task.

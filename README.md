@@ -20,8 +20,8 @@ Use it how you see fit.
 1.  You must have VirtualBox v4.2.10 (https://www.virtualbox.org/wiki/Downloads) and 
 1.  Vagrant v1.1.2 (http://downloads.vagrantup.com/tags/v1.1.2) installed
 1.  Clone this repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64)
-1.  `vagrant up` -> get a :coffee:
-1.  `vagrant halt` `vagrant up` -> answer StackOverflow questions
+1.  `vagrant up` -> The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
+1.  `vagrant halt` then `vagrant up` -> The first time you run this it will install a bunch of software; so you might want to go answer StackOverflow questions questions
 1.  `vagrant ssh` -> You're now in a sandbox environment on the VM which simulates the Stackato deployment environment
 1.  `npm install`
 1.  `grunt run` -> This will compile your app and launch a dev server that you can access via http://localhost:4567 on your Dev machine

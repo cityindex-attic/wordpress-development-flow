@@ -6,8 +6,6 @@ PressupBox Development Boilerplate is a development workflow aimed at distribute
 * Wordpress
 * Stackato
 
-Use it how you see fit.
-
 ## Project Leader
 
 **David Laing**
@@ -29,8 +27,8 @@ Vagrant version 1.1.2
 1.  Clone _this_ repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64, Ubuntu 12.10)
 1.  From the root of your freshly cloned repo, run `vagrant up` to start your development VM 
 > The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
-
-1.  `vagrant halt` then `vagrant up` -> The first time you run this it will install a bunch of software; so you might want to go answer StackOverflow questions questions
+    
+1.  [this step should go away] vagrant up will fail the first time you run it so that Guest Additions can be updated.  Restart the process using `vagrant halt` followed by `vagrant up`
 1.  `vagrant ssh` -> You're now in a sandbox environment on the VM which simulates the Stackato deployment environment
 1.  `npm install`
 1.  `grunt run` -> This will compile your app and launch a dev server that you can access via http://localhost:4567 on your Dev machine

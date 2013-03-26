@@ -6,7 +6,7 @@ if [ ! -f /usr/bin/curl ]; then
 fi
 echo "curl:\t$(curl --version)" | head -n 1
 
-if [ ! -f /home/vagrant/VBoxGuestAdditions_4.2.10.iso ]; then
+if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "Upgrading VBoxGuestAdditions"
   curl --location http://download.virtualbox.org/virtualbox/4.2.10/VBoxGuestAdditions_4.2.10.iso > /home/vagrant/VBoxGuestAdditions_4.2.10.iso
   sudo mount /home/vagrant/VBoxGuestAdditions_4.2.10.iso -o loop /mnt
@@ -79,6 +79,15 @@ if [ ! -f /usr/bin/wp ]; then
   sudo curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
   chmod +x /usr/bin/wp
 fi
+
+if [ ! -f /usr/bin/stackato ]; then
+    sudo curl -k --location -o /tmp/stackato.zip https://api.stackato.cil.stack.me/static/stackato-1.6.1-linux-glibc2.3-x86_64.zip 
+    sudo apt-get install unzip -y 
+    sudo unzip /tmp/stackato.zip -d /tmp
+    sudo mv /tmp/stackato-1.6.1-linux-glibc2.3-x86_64/stackato /usr/bin
+    sudo rm -rf /tmp/stackato*
+fi
+echo "stackato:\t$(stackato --version)"
 
 if [ ! -f /usr/bin/grunt ]; then
   sudo npm install -g grunt-cli

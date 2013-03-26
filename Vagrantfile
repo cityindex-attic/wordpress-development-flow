@@ -105,7 +105,6 @@ rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ 
 
 echo "Configuring build dependancies"
 npm install
-grunt install-buildpack
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

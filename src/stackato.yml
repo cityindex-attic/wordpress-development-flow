@@ -1,0 +1,15 @@
+name: pressupbox-development-boilerplate
+instances: 1
+framework:
+  type: buildpack
+env:
+  BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
+mem: 256
+ignores: ["bin", "config", "logs", "public/wordpress", "public/wordpress/wp-config.php", "run", "runtimes"]
+services:
+  pressupbox-development-boilerplate_mysql: mysql
+  pressupbox-development-boilerplate_uploads: filesystem
+hooks:
+    post-staging:
+    - rm -rf public/wp-content/uploads
+    - ln -s "$STACKATO_FILESYSTEM" public/wp-content/uploads

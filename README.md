@@ -1,17 +1,31 @@
-# [Remote Development Boilerplate](http://#)
+# [PressupBox Development Boilerplate](http://#)
 
-Remote Development Boilerplate is a proposed method of a development workflow. Use it how you see fit.
+PressupBox Development Boilerplate is a development workflow aimed at distributed teams that use:
 
-## Author
+* Github
+* Wordpress
+* Stackato
 
-**Ryan Holder**
+Use it how you see fit.
 
-+ [http://twitter.com/ryanholder](http://twitter.com/ryanholder)
-+ [http://github.com/ryanholder](http://github.com/ryanholder)
+## Project Leader
+
+**David Laing**
+
++ [http://twitter.com/davidlaing](http://twitter.com/davidlaing)
++ [http://github.com/mrdavidlaing](http://github.com/mrdavidlaing)
 
 ## Getting started
 
-Text here..
+1.  You must have VirtualBox v4.2.10 (https://www.virtualbox.org/wiki/Downloads) and 
+1.  Vagrant v1.1.2 (http://downloads.vagrantup.com/tags/v1.1.2) installed
+1.  Clone this repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64)
+1.  `vagrant up` -> The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
+1.  `vagrant halt` then `vagrant up` -> The first time you run this it will install a bunch of software; so you might want to go answer StackOverflow questions questions
+1.  `vagrant ssh` -> You're now in a sandbox environment on the VM which simulates the Stackato deployment environment
+1.  `npm install`
+1.  `grunt run` -> This will compile your app and launch a dev server that you can access via http://localhost:4567 on your Dev machine
+1.  TODO Any changes you make on your dev machine will be automatically copied to your vagrant VM
 
 ## Contributing to this project (bug reports, feature requests, pull requests)
 

@@ -65,14 +65,6 @@ if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
 fi
 echo "php:\t$(php -v)" | head -n 1
 
-if [ ! -f /usr/bin/hhvm ]; then
-  echo "Installing hiphop"
-  echo "deb http://dl.hiphop-php.com/ubuntu precise main" | sudo tee -a /etc/apt/sources.list
-  sudo apt-get update
-  sudo apt-get install hiphop-php -y --force-yes
-fi
-echo "hhvm:\t$(hhvm --version)" | head -n 1
-
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
   sudo apt-get install python-software-properties -y
@@ -81,13 +73,6 @@ if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   sudo apt-get install nodejs npm -y
 fi
 echo "node:\t$(node -v)"
-
-if [ ! -f /usr/bin/whippet ]; then
-  echo "Installing whippet"
-  sudo git clone https://github.com/dxw/whippet.git /usr/local/whippet
-  cd /usr/local/whippet && git submodule update --init
-  sudo ln -s /usr/local/whippet/whippet /usr/bin/whippet
-fi
 
 if [ ! -f /usr/bin/wp ]; then
   echo "Installing wp-cli"
@@ -101,14 +86,17 @@ if [ ! -f /usr/bin/grunt ]; then
 fi
 echo "grunt:\t$(grunt --version)"
 
-if [ ! -f /usr/local/bin/mason ]; then
-  sudo gem install mason foreman
-  mason buildpacks:install https://github.com/mchung/heroku-buildpack-wordpress.git
-fi
-echo "mason:\t$(mason --version)"
-
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 1
+rm /home/vagrant/VBoxGuestAdditions_4.2.10.iso
+rm /home/vagrant/postinstall.sh
+
+echo "Copying host source files into place"
+rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
+
+echo "Configuring build dependancies"
+npm install
+grunt install-buildpack
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

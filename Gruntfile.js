@@ -77,9 +77,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
+  grunt.registerTask('install-buildpack', 'Download buildpack to ~/buildpack' , function() {
+      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git buildpack');
+  });
+
   grunt.registerTask('compile', ['copy','compile-buildpack']);
   grunt.registerTask('compile-buildpack', 'Compile src/ into dist/', function() {
-    shell.exec('~/.mason/buildpacks/wordpress/bin/compile /vagrant/dist');    
+    shell.exec('~/buildpack/bin/compile ~/dist');    
   });
 
   grunt.registerTask('dev-server', 'Serve site at http://localhost:4567' , function() {

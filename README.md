@@ -18,7 +18,9 @@ Use it how you see fit.
 ## Getting started
 
 1.  You must have VirtualBox v4.2.10 (https://www.virtualbox.org/wiki/Downloads) and 
-1.  Vagrant v1.1.2 (http://downloads.vagrantup.com/tags/v1.1.2) installed
+1.  Vagrant v1.1.2 (http://docs.vagrantup.com/v2/installation/index.html) installed
+>  :exclamation: Confirm that you have the right version of vagrant running - `vagrant --version` should show `Vagrant version 1.1.2`
+
 1.  Clone this repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64)
 1.  `vagrant up` -> The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
 1.  `vagrant halt` then `vagrant up` -> The first time you run this it will install a bunch of software; so you might want to go answer StackOverflow questions questions

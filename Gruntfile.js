@@ -77,11 +77,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('install-buildpack', 'Download buildpack to ~/buildpack' , function() {
-      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git buildpack');
+  grunt.registerTask('refresh-buildpack', 'Download buildpack to ~/buildpack' , function() {
+    if (shell.test('-d', "/home/vagrant/buildpack/.git")) { 
+      grunt.log.writeln('Updating buildpack');
+      shell.exec('git --git-dir ~/buildpack/.git pull');
+    } else {
+      grunt.log.writeln('Cloning buildpack');
+      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ~/buildpack');
+    }
   });
 
-  grunt.registerTask('compile', ['copy','compile-buildpack']);
+  grunt.registerTask('compile', ['copy','refresh-buildpack']);
   grunt.registerTask('compile-buildpack', 'Compile src/ into dist/', function() {
     shell.exec('~/buildpack/bin/compile ~/dist');    
   });

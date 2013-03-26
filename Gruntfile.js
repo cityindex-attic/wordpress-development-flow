@@ -87,7 +87,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('compile', ['copy','refresh-buildpack']);
+  grunt.registerTask('compile', ['copy','refresh-buildpack', 'compile-buildpack']);
   grunt.registerTask('compile-buildpack', 'Compile src/ into dist/', function() {
     shell.exec('~/buildpack/bin/compile ~/dist');    
   });
@@ -129,8 +129,9 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['jshint', 'clean', 'compile']);
-  grunt.registerTask('run', ['dev-server', 'regarde']);
+  grunt.registerTask('build', ['jshint', 'compile']);
+  grunt.registerTask('rebuild', ['clean', 'build']);
+  grunt.registerTask('run', ['build', 'dev-server', 'regarde']);
  
   // Default task.
   grunt.registerTask('default', ['build'] );

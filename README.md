@@ -27,6 +27,19 @@ Use it how you see fit.
 1.  `grunt run` -> This will compile your app and launch a dev server that you can access via http://localhost:4567 on your Dev machine
 1.  TODO Any changes you make on your dev machine will be automatically copied to your vagrant VM
 
+## Concepts involved
+
+1. [Dev / Prod parity(http://www.12factor.net/dev-prod-parity) -> A local development build & run time is encapsulated in a
+Vagrant VM.  Whilst the developer is free to choose their editor tooling; they will be running & debugging their code in an
+environment that is nearly identical to the production deployment environment as possible.  
+1. Buildpack -> 
+1. Build script - the following tasks are automated using the build script:
+   1. Compilation - converting source code to running code 
+   1. Running - starting 
+   1. Deployment
+1. Continuous Integration Server - source code events trigger the CI server to run build script tasks; and report on their success or failure
+1. Platform as a Service - The hosting platform is a PaaS; enabling scripted deployment
+
 ## Contributing to this project (bug reports, feature requests, pull requests)
 
 Have a bug, feature request or pull request? [Please open a new issue](https://github.com/cityindex/remote-development-boilerplate/issues).

@@ -22,7 +22,9 @@ Use it how you see fit.
 >  :exclamation: Confirm that you have the right version of vagrant running - `vagrant --version` should show `Vagrant version 1.1.2`
 
 1.  Clone _this_ repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64, Ubuntu 12.10)
-1.  From the root of your freshly cloned repo, run `vagrant up` to start your development VM -> The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
+1.  From the root of your freshly cloned repo, run `vagrant up` to start your development VM 
+> The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
+
 1.  `vagrant halt` then `vagrant up` -> The first time you run this it will install a bunch of software; so you might want to go answer StackOverflow questions questions
 1.  `vagrant ssh` -> You're now in a sandbox environment on the VM which simulates the Stackato deployment environment
 1.  `npm install`

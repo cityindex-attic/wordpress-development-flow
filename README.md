@@ -26,13 +26,13 @@ Vagrant version 1.1.2
 
 1.  Clone _this_ repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64, Ubuntu 12.10)
 1.  From the root of your freshly cloned repo, run `vagrant up` to start your development VM 
-> The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
-    
-1.  [this step should go away] vagrant up will fail the first time you run it so that Guest Additions can be updated.  Restart the process using `vagrant halt` followed by `vagrant up`
+> * The `vagrant up` config process is idempotent.  If you see any errors, just restart the process by running `vagrant halt && vagrant up`
+> * The first time you run this, it will download a 350MB VM image.  You might want to get a :coffee:
+
 1.  `vagrant ssh` -> You're now in a sandbox environment on the VM which simulates the Stackato deployment environment
-1.  `npm install`
 1.  `grunt run` -> This will compile your app and launch a dev server that you can access via http://localhost:4567 on your Dev machine
-1.  TODO Any changes you make on your dev machine will be automatically copied to your vagrant VM
+1.  TODO Any changes you make on your dev machine will be automatically copied to your vagrant VM.  Currenty you must run
+`rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/` from your vagrant ssh terminal after each file change
 
 ## Concepts involved
 

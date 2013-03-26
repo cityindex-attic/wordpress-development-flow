@@ -29,7 +29,7 @@ Use it how you see fit.
 
 ## Concepts involved
 
-1. [Dev / Prod parity(http://www.12factor.net/dev-prod-parity) -> A local development build & run time is encapsulated in a
+1. [Dev / Prod parity](http://www.12factor.net/dev-prod-parity) -> A local development build & run time is encapsulated in a
 Vagrant VM.  Whilst the developer is free to choose their editor tooling; they will be running & debugging their code in an
 environment that is nearly identical to the production deployment environment as possible.  
 1. Buildpack -> 

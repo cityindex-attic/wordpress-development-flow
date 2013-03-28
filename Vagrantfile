@@ -96,7 +96,9 @@ fi
 echo "grunt:\t$(grunt --version)"
 
 #set environment variables
-echo -e "#Set environment variables\nexport HHVM_LIB_PATH=/home/vagrant/dist/runtimes/hiphop-php/bin/" >> /etc/profile
+if ! grep -qe "pressupbox-boiler-plate env vars" "/etc/profile"; then
+  echo -e "#pressupbox-boiler-plate env vars\nexport HHVM_LIB_PATH=/home/vagrant/dist/runtimes/hiphop-php/bin/" >> /etc/profile
+fi
 #end set environment variables
 
 echo "Clean up..."

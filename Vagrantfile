@@ -95,6 +95,10 @@ if [ ! -f /usr/bin/grunt ]; then
 fi
 echo "grunt:\t$(grunt --version)"
 
+#set environment variables
+echo -e "#Set environment variables\nexport HHVM_LIB_PATH=/home/vagrant/dist/runtimes/hiphop-php/bin/" >> /etc/profile
+#end set environment variables
+
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 1
 rm /home/vagrant/VBoxGuestAdditions_4.2.10.iso

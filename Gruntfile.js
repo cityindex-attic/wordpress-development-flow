@@ -129,9 +129,17 @@ module.exports = function(grunt) {
 
   });
 
+  grunt.registerTask('verify-hosting-dependancies', 'Ensure that all the hosting dependancies are in place to serve up WordPress' , function() {
+      if (!shell.which('mysql')) {
+        grunt.log.error('mysql must be installed');
+        return false;
+      }
+      grunt.log.ok("All hosting dependancies look good!");
+  });
+
   grunt.registerTask('build', ['jshint', 'compile']);
   grunt.registerTask('rebuild', ['clean', 'build']);
-  grunt.registerTask('run', ['build', 'dev-server', 'regarde']);
+  grunt.registerTask('run', ['build', 'verify-hosting-dependancies', 'dev-server', 'regarde']);
  
   // Default task.
   grunt.registerTask('default', ['build'] );

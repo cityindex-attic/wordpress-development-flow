@@ -1,10 +1,15 @@
 # [PressupBox Development Boilerplate](http://#)
 
-PressupBox Development Boilerplate is a development workflow aimed at distributed teams that use:
+PressupBox Development Boilerplate is a development workflow aimed at distributed teams:
 
+Wordpress development teams can use the pressupbox development boilerplate to easily deploy vm's to both development and testing environments. By using Vagrant on the developers machine and Stackato on the remote server, a virtual machine encapsulating a github repository can be deployed to both the developer and the testing environment. This helps to work along the [Dev / Prod parity](http://www.12factor.net/dev-prod-parity) by ensuring that everybody is working of the same underlying environment as possible, whilst the devoloper is free to choose their own IDE and development tools. Features can be built and tested locally, then deployed to a live server for further analysis.
+
+The pressupbox developement boilerplate involves:
 * Github
 * Wordpress
 * Stackato
+* Vagrant
+* Virtualbox
 
 ## Project Leader
 
@@ -14,7 +19,7 @@ PressupBox Development Boilerplate is a development workflow aimed at distribute
 
 ## Getting started
 
-1.   Install Vagrant v1.1.2 (http://docs.vagrantup.com/v2/installation/index.html)
+1.  Install Vagrant v1.1.2 (http://docs.vagrantup.com/v2/installation/index.html)
 1.  Install VirtualBox v4.2.10 (https://www.virtualbox.org/wiki/Downloads) 
 >  :exclamation: The version numbers are important; and the process of upgrading from vagrant 1.0 to 1.1 is non trivial.
 > Follow the installation instructions and then make sure you are running the right version of vagrant 

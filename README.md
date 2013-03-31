@@ -3,7 +3,7 @@
 PressupBox Development Boilerplate is a development workflow aimed at distributed teams:
 
 Wordpress development teams can use the pressupbox development boilerplate to closely match the teams development environment 
-to both the live and testing environments. By using Vagrant on the developers machine and Stackato on the testing and live server, 
+with both the live and testing environments. By using Vagrant on the developers machine and Stackato on the testing and live server, 
 a virtual machine encapsulating a github repository can be deployed to both the developer, the testing environment and the 
 live server. This helps to work along the [Dev / Prod parity](http://www.12factor.net/dev-prod-parity) by ensuring that 
 everybody is working of the same underlying environment as possible, whilst the devoloper is free to choose their own 

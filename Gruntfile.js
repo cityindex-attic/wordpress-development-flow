@@ -77,19 +77,19 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('refresh-buildpack', 'Download buildpack to ~/buildpack' , function() {
+  grunt.registerTask('refresh-buildpack', 'Download buildpack to ./buildpack' , function() {
     if (shell.test('-d', "/home/vagrant/buildpack/.git")) { 
       grunt.log.writeln('Updating buildpack');
-      shell.exec('git --git-dir ~/buildpack/.git pull');
+      shell.exec('git --git-dir ./buildpack/.git pull');
     } else {
       grunt.log.writeln('Cloning buildpack');
-      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ~/buildpack');
+      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack');
     }
   });
 
   grunt.registerTask('compile', ['copy','refresh-buildpack', 'compile-buildpack']);
   grunt.registerTask('compile-buildpack', 'Compile dist/ using buildpack/bin/compile', function() {
-    shell.exec('~/buildpack/bin/compile ~/dist ~/.buildpack-cache');    
+    shell.exec('./buildpack/bin/compile ./dist ./.buildpack-cache');    
   });
 
   grunt.registerTask('dev-server', 'Serve site at http://localhost:4567' , function() {
@@ -121,8 +121,8 @@ module.exports = function(grunt) {
     shell.exec('stackato login ' + username + ' --pass ' + password);
 
     //Push or update
-    if (shell.exec('stackato push '+ deployName + ' --no-prompt --path ~/dist').code !== 0) {
-      shell.exec('stackato update '+ deployName + ' --no-prompt --path ~/dist');
+    if (shell.exec('stackato push '+ deployName + ' --no-prompt --path ./dist').code !== 0) {
+      shell.exec('stackato update '+ deployName + ' --no-prompt --path ./dist');
     }
 
     grunt.log.ok('Deployment successful'); 

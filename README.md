@@ -36,7 +36,7 @@ Vagrant version 1.1.4
 
 1.  Clone _this_ repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64, Ubuntu 12.10)
 1.  From the root of your freshly cloned repo, run `vagrant up` to start your development VM 
-> * The `vagrant up` config process is idempotent.  If you see any errors, just restart the process by running `vagrant halt && vagrant up`
+> * The `vagrant up` config process is idempotent.  If you see any errors, just restart the process by running `vagrant reload`
 > * The first time you run this, it will download a 800MB VM image from Amazon S3 in Ireland.  
 >      * If you have a slow (<10MB) / unreliable Internet connection you might want to download the VM separately using a download manager.
 >      * See the `config.vm.box_url` section of the `Vagrantfile` for the download url.  Append `?torrent` to this to get a BitTorrent download.  You can manually register your downloaded VM using `vagrant box add {config.vm.box} {path/to/downloaded/name.box}

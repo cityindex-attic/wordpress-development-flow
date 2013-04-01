@@ -88,8 +88,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('compile', ['copy','refresh-buildpack', 'compile-buildpack']);
-  grunt.registerTask('compile-buildpack', 'Compile src/ into dist/', function() {
-    shell.exec('~/buildpack/bin/compile ~/dist');    
+  grunt.registerTask('compile-buildpack', 'Compile dist/ using buildpack/bin/compile', function() {
+    shell.exec('~/buildpack/bin/compile ~/dist ~/.buildpack-cache');    
   });
 
   grunt.registerTask('dev-server', 'Serve site at http://localhost:4567' , function() {

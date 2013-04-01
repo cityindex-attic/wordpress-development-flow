@@ -101,15 +101,15 @@ module.exports = function(grunt) {
     var stackatoBaseUri = "stackato.cil.stack.me";
 
     if (deployName === undefined) {
-      grunt.log.error('You must pass a deployName -> grunt deploy:your-deploy-name:username:password');
+      grunt.log.error('You must pass a deployName -> grunt release:your-deploy-name:username:password');
       return false;
     } 
     if (username === undefined) {
-      grunt.log.error('You must pass a username -> grunt deploy:your-deploy-name:username:password');
+      grunt.log.error('You must pass a username -> grunt release:your-deploy-name:username:password');
       return false;
     } 
     if (password === undefined) {
-      grunt.log.error('You must pass a password -> grunt deploy:your-deploy-name:username:password');
+      grunt.log.error('You must pass a password -> grunt release:your-deploy-name:username:password');
       return false;
     } 
     if (!shell.which('stackato')) {
@@ -121,8 +121,8 @@ module.exports = function(grunt) {
     shell.exec('stackato login ' + username + ' --pass ' + password);
 
     //Push or update
-    if (shell.exec('stackato push '+ deployName + ' --no-prompt').code !== 0) {
-      shell.exec('stackato update '+ deployName + ' --no-prompt');
+    if (shell.exec('stackato push '+ deployName + ' --no-prompt --path ~/dist').code !== 0) {
+      shell.exec('stackato update '+ deployName + ' --no-prompt --path ~/dist');
     }
 
     grunt.log.ok('Deployment successful'); 

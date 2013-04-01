@@ -25,13 +25,13 @@ The pressupbox developement boilerplate involves:
 
 ## Getting started
 
-1.  Install Vagrant v1.1.2 (http://docs.vagrantup.com/v2/installation/index.html)
+1.  Install Vagrant v1.1.4 (http://docs.vagrantup.com/v2/installation/index.html)
 1.  Install VirtualBox v4.2.10 (https://www.virtualbox.org/wiki/Downloads) 
 >  :exclamation: The version numbers are important; and the process of upgrading from vagrant 1.0 to 1.1 is non trivial.
 > Follow the installation instructions and then make sure you are running the right version of vagrant 
 ```
 $ vagrant --version
-Vagrant version 1.1.2
+Vagrant version 1.1.4
 ```
 
 1.  Clone _this_ repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64, Ubuntu 12.10)

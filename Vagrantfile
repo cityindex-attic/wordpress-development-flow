@@ -47,8 +47,6 @@ if [ ! -f /usr/bin/mysql ]; then
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password secret_password'
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password secret_password'
   sudo apt-get install mysql-server-5.5 -y
-
-  echo "Installing Test Database"
 fi
 echo "mysql:\t$(mysql --version)"
 

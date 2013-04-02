@@ -42,6 +42,11 @@ if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
 fi
 echo "ruby:\t$(ruby --version)"
 
+if [[ ! "$(rake --version)" =~ "rake, version 0.9.2.2" ]]; then
+  echo "Installing rake..."
+  sudo apt-get install rake
+fi
+
 if [ ! -f /usr/bin/mysql ]; then
   echo "Installing Mysql"
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password secret_password'

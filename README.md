@@ -1,10 +1,23 @@
 # [PressupBox Development Boilerplate](http://#)
 
-PressupBox Development Boilerplate is a development workflow aimed at distributed teams that use:
+[![Build Status](http://ci.labs.cityindex.com:8080/job/pressupbox-development-boilerplate/badge/icon)](http://ci.labs.cityindex.com:8080/job/pressupbox-development-boilerplate/)
 
+PressupBox Development Boilerplate is a development workflow aimed at distributed teams:
+
+Wordpress development teams can use the pressupbox development boilerplate to closely match the teams development environment 
+with both the live and testing environments. By using Vagrant on the developers machine and Stackato on the testing and live server, 
+a virtual machine encapsulating a github repository can be deployed to both the developer, the testing environment and the 
+live server. This helps to work along the [Dev / Prod parity](http://www.12factor.net/dev-prod-parity) by ensuring that 
+everybody is working of the same underlying environment as possible, whilst the devoloper is free to choose their own 
+IDE and development tools. Features can be built and tested locally, deployed to a test or build server and then 
+deployed to a live server - all utilizing the same underlying environment
+
+The pressupbox developement boilerplate involves:
 * Github
 * Wordpress
 * Stackato
+* Vagrant
+* Virtualbox
 
 ## Project Leader
 
@@ -14,18 +27,18 @@ PressupBox Development Boilerplate is a development workflow aimed at distribute
 
 ## Getting started
 
-1.  Install Vagrant v1.1.2 (http://docs.vagrantup.com/v2/installation/index.html)
+1.  Install Vagrant v1.1.4 (http://docs.vagrantup.com/v2/installation/index.html)
 1.  Install VirtualBox v4.2.10 (https://www.virtualbox.org/wiki/Downloads) 
 >  :exclamation: The version numbers are important; and the process of upgrading from vagrant 1.0 to 1.1 is non trivial.
 > Follow the installation instructions and then make sure you are running the right version of vagrant 
 ```
 $ vagrant --version
-Vagrant version 1.1.2
+Vagrant version 1.1.4
 ```
 
 1.  Clone _this_ repo to your Dev machine (tested on OSX Mountain Lion, Windows 7 x64, Ubuntu 12.10)
 1.  From the root of your freshly cloned repo, run `vagrant up` to start your development VM 
-> * The `vagrant up` config process is idempotent.  If you see any errors, just restart the process by running `vagrant halt && vagrant up`
+> * The `vagrant up` config process is idempotent.  If you see any errors, just restart the process by running `vagrant reload`
 > * The first time you run this, it will download a 800MB VM image from Amazon S3 in Ireland.  
 >      * If you have a slow (<10MB) / unreliable Internet connection you might want to download the VM separately using a download manager.
 >      * See the `config.vm.box_url` section of the `Vagrantfile` for the download url.  Append `?torrent` to this to get a BitTorrent download.  You can manually register your downloaded VM using `vagrant box add {config.vm.box} {path/to/downloaded/name.box}

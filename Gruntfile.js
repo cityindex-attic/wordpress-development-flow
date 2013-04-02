@@ -77,19 +77,19 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('refresh-buildpack', 'Download buildpack to ~/buildpack' , function() {
+  grunt.registerTask('refresh-buildpack', 'Download buildpack to ./buildpack' , function() {
     if (shell.test('-d', "/home/vagrant/buildpack/.git")) { 
       grunt.log.writeln('Updating buildpack');
-      shell.exec('git --git-dir ~/buildpack/.git pull');
+      shell.exec('git --git-dir ./buildpack/.git pull');
     } else {
       grunt.log.writeln('Cloning buildpack');
-      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ~/buildpack');
+      shell.exec('git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack');
     }
   });
 
   grunt.registerTask('compile', ['copy','refresh-buildpack', 'compile-buildpack']);
-  grunt.registerTask('compile-buildpack', 'Compile src/ into dist/', function() {
-    shell.exec('~/buildpack/bin/compile ~/dist');    
+  grunt.registerTask('compile-buildpack', 'Compile dist/ using buildpack/bin/compile', function() {
+    shell.exec('./buildpack/bin/compile ./dist ./.buildpack-cache');    
   });
 
   grunt.registerTask('dev-server', 'Serve site at http://localhost:4567' , function() {
@@ -101,15 +101,15 @@ module.exports = function(grunt) {
     var stackatoBaseUri = "stackato.cil.stack.me";
 
     if (deployName === undefined) {
-      grunt.log.error('You must pass a deployName -> grunt deploy:your-deploy-name:username:password');
+      grunt.log.error('You must pass a deployName -> grunt release:your-deploy-name:username:password');
       return false;
     } 
     if (username === undefined) {
-      grunt.log.error('You must pass a username -> grunt deploy:your-deploy-name:username:password');
+      grunt.log.error('You must pass a username -> grunt release:your-deploy-name:username:password');
       return false;
     } 
     if (password === undefined) {
-      grunt.log.error('You must pass a password -> grunt deploy:your-deploy-name:username:password');
+      grunt.log.error('You must pass a password -> grunt release:your-deploy-name:username:password');
       return false;
     } 
     if (!shell.which('stackato')) {
@@ -121,17 +121,25 @@ module.exports = function(grunt) {
     shell.exec('stackato login ' + username + ' --pass ' + password);
 
     //Push or update
-    if (shell.exec('stackato push '+ deployName + ' --no-prompt').code !== 0) {
-      shell.exec('stackato update '+ deployName + ' --no-prompt');
+    if (shell.exec('stackato push '+ deployName + ' --no-prompt --path ./dist').code !== 0) {
+      shell.exec('stackato update '+ deployName + ' --no-prompt --path ./dist');
     }
 
     grunt.log.ok('Deployment successful'); 
 
   });
 
+  grunt.registerTask('verify-hosting-dependancies', 'Ensure that all the hosting dependancies are in place to serve up WordPress' , function() {
+      if (!shell.which('mysql')) {
+        grunt.log.error('mysql must be installed');
+        return false;
+      }
+      grunt.log.ok("All hosting dependancies look good!");
+  });
+
   grunt.registerTask('build', ['jshint', 'compile']);
   grunt.registerTask('rebuild', ['clean', 'build']);
-  grunt.registerTask('run', ['build', 'dev-server', 'regarde']);
+  grunt.registerTask('run', ['build', 'verify-hosting-dependancies', 'dev-server', 'regarde']);
  
   // Default task.
   grunt.registerTask('default', ['build'] );

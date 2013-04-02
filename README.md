@@ -1,5 +1,7 @@
 # [PressupBox Development Boilerplate](http://#)
 
+[![Build Status](http://ci.labs.cityindex.com:8080/job/pressupbox-development-boilerplate/badge/icon)](http://ci.labs.cityindex.com:8080/job/pressupbox-development-boilerplate/)
+
 PressupBox Development Boilerplate is a development workflow aimed at distributed teams:
 
 Wordpress development teams can use the pressupbox development boilerplate to closely match the teams development environment 

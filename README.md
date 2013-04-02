@@ -19,7 +19,39 @@ The pressupbox developement boilerplate involves:
 * Vagrant
 * Virtualbox
 
-## Project Leader
+## Flow overview
+```
+|-------------|                        |-------------|                            |-------------|
+|   GitHub    |   ----PR triggers-->   |   Jenkins   |   ---- grunt release -->   |   Stackato  |
+|-------------|                        |-------------|                            |-------------|
+  |  ^
+  |  |
+  |  | |--------------------------------Dev workstation (Vagrant VM host)-----------------------|
+  c  P |                        |------------------ Dev server (Vagrant VM guest)---------------|
+  l  R |                        | ~/dist/bin/start.sh          \                                |
+  o  | |                        | ~/dist/runtimes/hiphop-php   |                                |
+  n  | |                        | ~/dist/public/index.php      |--- from buildpack/bin/compile  |
+  e  --|                        | ~/dist/public/wp-config.php  |                                |
+  |    |                        | ~/dist/public/wordpress/     /                                |
+  |    |                        | ~/dist/public/wp-content/    <--- from ~/src                  |
+  ---> |                        |                                                               |
+       |                        | ~/buildpack/  <-- mrdavidlaing/stackato-buildpack-wordpress   |
+       |                        |                                                               |
+       | ~/src                  | ~/src           \                                             |
+       | ~/Gruntfile.js         | ~/Gruntfile.js  /  -- synced from guest                       |
+       | ~/Vagrantfile          |---------------------------------------------------------------|
+       |------------------------|---------------------------------------------------------------| 
+
+
+        Editor (on host)        Terminal 1                       Terminal 2
+        ~/src                   * clone & create branch          * vagrant ssh
+                                * vagrant up                     * grunt copy                              \
+                                * vagrant sync                   * grunt build (~/buildpack/bin/compile)   |--> = grunt run
+                                                                 * grunt dev-server                        /
+
+```
+
+## Project Manager
 
 **David Laing**
 

@@ -92,8 +92,13 @@ module.exports = function(grunt) {
     shell.exec('./buildpack/bin/compile ./dist ./.buildpack-cache');    
   });
 
+  grunt.registerTask('setup-test-database', 'Create a test database with some test data' , function() {
+      shell.exec("mysql -uroot -psecret_password -e 'CREATE DATABASE IF NOT EXISTS wordpress'");
+      shell.exec("cat tests/wordpress.sample.sql | mysql -uroot -psecret_password wordpress");
+      grunt.log.ok('Setup test database'); 
+  });
+
   grunt.registerTask('dev-server', 'Serve site at http://localhost:4567' , function() {
-      shell.exec('mysqladmin -uroot -psecret_password create wordpress');
       shell.exec('cd dist/ && bin/start.sh 4567 Verbose', {async:true});
   });
 
@@ -139,7 +144,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', ['jshint', 'compile']);
   grunt.registerTask('rebuild', ['clean', 'build']);
-  grunt.registerTask('run', ['build', 'verify-hosting-dependancies', 'dev-server', 'regarde']);
+  grunt.registerTask('run', ['build', 'verify-hosting-dependancies', 'setup-test-database', 'dev-server', 'regarde']);
  
   // Default task.
   grunt.registerTask('default', ['build'] );

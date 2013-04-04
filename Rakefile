@@ -31,7 +31,7 @@
   task :refresh_buildpack do
     task_header("Refresh Buildpack")
 
-    if Dir.exists?("/home/vagrant/buildpack/.git")
+    if Dir.exists?("./buildpack/.git")
       puts "\tUpdating buildpack"
       sh "git --git-dir ./buildpack/.git reset --hard HEAD"
       sh "git --git-dir ./buildpack/.git pull"

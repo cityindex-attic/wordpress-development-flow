@@ -33,6 +33,7 @@
 
     if Dir.exists?("/home/vagrant/buildpack/.git")
       puts "\tUpdating buildpack"
+      sh "git --git-dir ./buildpack/.git reset --hard HEAD"
       sh "git --git-dir ./buildpack/.git pull"
     else
       puts "\tCloning buildpack"

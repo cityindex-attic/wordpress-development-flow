@@ -42,11 +42,14 @@
   #end Git refresh buildpack
 
 
-
-  task :compile do
+  ##
+  # compile buildpack
+  ##
+  task :compile_buildpack do
     task_header("Compile")
     sh "./buildpack/bin/compile ./dist ./.buildpack-cache"
   end
+  #end compile buildpack
 
 
   ##
@@ -55,7 +58,11 @@
   namespace :dev_server do
     task :mysql do
       task_header("Setting up MySql")
-      puts `mysqladmin -uroot -psecret_password create wordpress` # 'puts' prevents db exists error from failing build
+      sh "mysqladmin -uroot -psecret_password create wordpress" do |ok,res|
+        if ok
+          sh "mysql -uroot -psecret_password wordpress < wordpress.sample.sql"
+        end
+      end
     end
     task :server_start do
       task_header("Starting server")
@@ -102,7 +109,7 @@
   ##
   # default
   ##
-  task :default => [:copy, :refresh_buildpack, "dev_server:all", :release, :verify_hosting_dependencies] do
+  task :default => [:copy, :refresh_buildpack, :compile_buildpack, "dev_server:all", :release, :verify_hosting_dependencies] do
     DEMO_VAL = 4
     puts "Ready for the day!"
     puts ""

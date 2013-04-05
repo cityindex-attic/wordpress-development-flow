@@ -44,7 +44,7 @@ echo "ruby:\t$(ruby --version)"
 
 if [[ ! "$(rake --version)" =~ "rake, version 10.0.4" ]]; then
   echo "Installing rake..."
-  sudo gem install rake
+  sudo gem install rake --no-ri --no-rdoc
 fi
 
 if [ ! -f /usr/bin/mysql ]; then

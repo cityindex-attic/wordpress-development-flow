@@ -31,6 +31,14 @@
   #end copy files and directories
 
   ##
+  desc "Watch files"
+  ##
+  task :watcher do
+    
+  end
+  #end watch files
+
+  ##
   desc "Git refresh buildpack"
   ##
   task :refresh_buildpack do

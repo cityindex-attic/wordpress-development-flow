@@ -1,8 +1,7 @@
   require 'fileutils'
 
-
   ##
-  # copy files and directories
+  desc "copy files and directories"
   ##
   task :copy do
     @source = "src"
@@ -24,9 +23,8 @@
   end
   #end copy files and directories
 
-
   ##
-  # Git refresh buildpack
+  desc "Git refresh buildpack"
   ##
   task :refresh_buildpack do
     task_header("Refresh Buildpack")
@@ -42,9 +40,8 @@
   end
   #end Git refresh buildpack
 
-
   ##
-  # compile buildpack
+  desc "compile buildpack"
   ##
   task :compile_buildpack do
     task_header("Compile")
@@ -52,9 +49,8 @@
   end
   #end compile buildpack
 
-
   ##
-  # dev server setup
+  desc "dev server setup"
   ##
   namespace :dev_server do
     task :mysql do
@@ -74,9 +70,8 @@
   end
   #end dev server setup
 
-
   ##
-  # stackato release
+  desc "stackato release"
   ##
   task :release, :deployName, :username, :password do
     task_header("Release")
@@ -92,9 +87,8 @@
   end
   #end stackato release
 
-
   ##
-  # verify hosting dependencies
+  desc "verify hosting dependencies"
   ##
   task :verify_hosting_dependencies do
     task_header("Verifying hosting dependencies")
@@ -106,9 +100,8 @@
   end
   #end verify hosting dependencies
 
-
   ##
-  # default
+  desc "default  => [:copy, :refresh_buildpack, :compile_buildpack, dev_server:all, :release, :verify_hosting_dependencies]"
   ##
   task :default => [:copy, :refresh_buildpack, :compile_buildpack, "dev_server:all", :release, :verify_hosting_dependencies] do
     DEMO_VAL = 4

@@ -1,6 +1,13 @@
   require 'fileutils'
 
   ##
+  desc "delete created assets"
+  ##
+  task :clean do
+    sh "rm -rf ./dist"
+  end
+
+  ##
   desc "copy files and directories"
   ##
   task :copy do
@@ -100,10 +107,20 @@
   end
   #end verify hosting dependencies
 
+  desc "[:copy, :refresh_buildpack, :compile_buildpack]"
+  task :build => [:copy, :refresh_buildpack, :compile_buildpack]
+  desc "[:clean, :build]"
+  task :rebuild => [:clean, :build]
+
   ##
-  desc "default  => [:copy, :refresh_buildpack, :compile_buildpack, dev_server:all, :release, :verify_hosting_dependencies]"
+  desc "run  => [:build, :verify_hosting_dependencies, dev_server:all]"
   ##
-  task :default => [:copy, :refresh_buildpack, :compile_buildpack, "dev_server:all", :release, :verify_hosting_dependencies] do
+  task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
+
+  ##
+  desc "default => [:run]"
+  ##
+  task :default => [:run] do
     DEMO_VAL = 4
     puts "Ready for the day!"
     puts ""

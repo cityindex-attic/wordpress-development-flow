@@ -80,15 +80,15 @@
   ##
   desc "stackato release"
   ##
-  task :release, :deployName, :username, :password do
+  task :release, :deployName, :username, :password do |t, args|
     task_header("Release")
     stackatoBaseUri = "stackato.cil.stack.me"
-    puts "deploying to url: http://#{deployName}.#{stackatoBaseUri}"
+    puts "deploying to url: http://#{args[:deployName]}.#{args[:stackatoBaseUri]}"
     sh "stackato target https://api.#{stackatoBaseUri}"
-    sh "stackato login #{username} --pass #{password}"
-    sh "stackato push #{deployName} --no-prompt --path ./dist" do |ok,res|
+    sh "stackato login #{args[:username]} --pass #{args[:password]}"
+    sh "stackato push #{args[:deployName]} --no-prompt --path ./dist" do |ok,res|
       if ! ok
-        sh "stackato update #{deployName} --no-prompt --path ./dist"
+        sh "stackato update #{args[:deployName]} --no-prompt --path ./dist"
       end
     end
   end

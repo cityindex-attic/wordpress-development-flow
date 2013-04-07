@@ -47,6 +47,11 @@ if [[ ! "$(rake --version)" =~ "rake, version 10.0.4" ]]; then
   sudo gem install rake --no-ri --no-rdoc
 fi
 
+if [[ ! "$(bundle --version)" =~ "Bundler version 1.1.4" ]]; then
+  echo "Installing bundle..."
+  sudo gem install bundler
+fi
+
 if [ ! -f /usr/bin/mysql ]; then
   echo "Installing Mysql"
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password secret_password'

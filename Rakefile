@@ -36,7 +36,8 @@
   ##
   task :watcher do
     Guard.setup
-    Guard.Dsl.evaluate_guardfile(:guardfile => 'Guardfile', :group => 'Frontend')
+    Guard::Dsl.evaluate_guardfile(:guardfile => 'Guardfile', :group => 'Frontend')
+    Guard.run_all({})
   end
   #end watch files
 

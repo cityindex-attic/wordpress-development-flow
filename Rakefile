@@ -130,10 +130,14 @@
   task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
 
   ##
+  desc "test => [:copy, :watcher]"
+  ##
+  task :test => [:copy, :watcher]
+
+  ##
   desc "default => [:run]"
   ##
   task :default => [:run] do
-    DEMO_VAL = 4
     puts "Ready for the day!"
     puts ""
   end

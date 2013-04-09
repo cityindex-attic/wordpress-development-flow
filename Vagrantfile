@@ -70,15 +70,6 @@ if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
 fi
 echo "php:\t$(php -v)" | head -n 1
 
-if [[ ! "$(node --version)" =~ "v0.10" ]]; then
-  echo "Installing nodejs"
-  sudo apt-get install python-software-properties -y
-  sudo add-apt-repository ppa:richarvey/nodejs -y  
-  sudo apt-get update
-  sudo apt-get install nodejs npm -y
-fi
-echo "node:\t$(node -v)"
-
 if [ ! -f /usr/bin/wp ]; then
   echo "Installing wp-cli"
   sudo curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
@@ -109,7 +100,6 @@ echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
 
 echo "Configuring build dependancies"
-npm install
 bundle install
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="

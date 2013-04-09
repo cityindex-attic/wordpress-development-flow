@@ -1,4 +1,5 @@
   require 'fileutils'
+  require 'guard'
 
   ##
   desc "delete created assets"
@@ -34,7 +35,8 @@
   desc "Watch files"
   ##
   task :watcher do
-    
+    Guard.setup
+    Guard.Dsl.evaluate_guardfile(:guardfile => 'Guardfile', :group => 'Frontend')
   end
   #end watch files
 

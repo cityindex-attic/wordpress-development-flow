@@ -47,15 +47,22 @@ if [[ ! "$(rake --version)" =~ "rake, version 10.0.4" ]]; then
   sudo gem install rake --no-ri --no-rdoc
 fi
 
-#if [[ ! "$(bundle --version)" =~ "Bundler version 1.1.4" ]]; then
-if [ ! -f /usr/bin/bundle ]; then
+if ! gem list bundle -i; then
   echo "Installing bundle..."
   sudo gem install bundler
 fi
 
-if ! gem list guard -i ; then
+if ! gem list guard -i; then
   echo "Installing guard..."
   sudo gem install guard
+fi
+if ! gem list guard-copy -i; then
+  echo "Installing guard-copy..."
+  sudo gem install guard-copy
+fi
+if ! gem list guard-shell -i; then
+  echo "Installing guard-shell..."
+  sudo gem install guard-shell
 fi
 
 if [ ! -f /usr/bin/mysql ]; then

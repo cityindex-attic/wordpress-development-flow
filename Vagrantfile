@@ -127,6 +127,11 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
+  config.vm.provider :sync do |sync|
+    sync.local.folder = "src/"
+    sync.remote.folder = "src/"
+  end
+
   config.vm.provision :shell, :inline => $script
 end
 

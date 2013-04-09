@@ -5,7 +5,9 @@
   desc "delete created assets"
   ##
   task :clean do
-    sh "rm -rf ./dist"
+    #Delete everything below dist/ except .gitkeep - http://whileonefork.blogspot.hu/2011/02/bash-delete-directories-except-that-one.html
+    puts "Deleting everything below dist/ (except dist/.gitkeep)"
+    sh 'rm -rf $(echo dist/* | tr " " "\n" | grep -v .gitkeep | tr "\n" " ")'
   end
 
   ##

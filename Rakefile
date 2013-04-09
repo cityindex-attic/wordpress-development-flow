@@ -37,9 +37,8 @@
   desc "Watch files"
   ##
   task :watcher do
-    Guard.setup
-    Guard::Dsl.evaluate_guardfile(:guardfile => 'Guardfile', :group => 'Frontend')
-    Guard.run_all({})
+    puts "==== Type: exit to quit ===="
+    sh 'bundle exec guard'
   end
   #end watch files
 

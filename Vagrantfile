@@ -42,27 +42,9 @@ if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
 fi
 echo "ruby:\t$(ruby --version)"
 
-if [[ ! "$(rake --version)" =~ "rake, version 10.0.4" ]]; then
-  echo "Installing rake..."
-  sudo gem install rake --no-ri --no-rdoc
-fi
-
-if ! gem list bundle -i; then
-  echo "Installing bundle..."
-  sudo gem install bundler
-fi
-
-if ! gem list guard -i; then
-  echo "Installing guard..."
-  sudo gem install guard
-fi
-if ! gem list guard-copy -i; then
-  echo "Installing guard-copy..."
-  sudo gem install guard-copy
-fi
-if ! gem list guard-shell -i; then
-  echo "Installing guard-shell..."
-  sudo gem install guard-shell
+if [[ ! "$(bundle --version)" =~ "Bundler version 1.3.5" ]]; then
+  echo "Installing bundler..."
+  sudo gem install bundle --no-ri --no-rdoc
 fi
 
 if [ ! -f /usr/bin/mysql ]; then
@@ -128,6 +110,7 @@ rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ 
 
 echo "Configuring build dependancies"
 npm install
+bundle install
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

@@ -87,6 +87,10 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.registerTask('docs', 'Generating wordpress documentation', function(){
+    //pass
+  });
+
   grunt.registerTask('compile', ['copy','refresh-buildpack', 'compile-buildpack']);
   grunt.registerTask('compile-buildpack', 'Compile dist/ using buildpack/bin/compile', function() {
     shell.exec('./buildpack/bin/compile ./dist ./.buildpack-cache');    

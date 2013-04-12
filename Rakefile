@@ -37,8 +37,11 @@
   desc "Watch files"
   ##
   task :watcher do
-    puts "==== Type: exit to quit ===="
-    sh 'bundle exec guard'
+    task_header("Watch files")
+    Guard.setup
+    copy = Guard.guards('copy')
+    copy.start
+    copy.run_all
   end
   #end watch files
 

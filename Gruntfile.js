@@ -88,8 +88,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('docs', 'Generating wordpress documentation', function(){
-    //pass
-  });
+    shell.exec('cd ~/dist/public/docs &&  phpdoc -c ./phpdoc.xml');
+  });                                                               
 
   grunt.registerTask('compile', ['copy','refresh-buildpack', 'compile-buildpack']);
   grunt.registerTask('compile-buildpack', 'Compile dist/ using buildpack/bin/compile', function() {

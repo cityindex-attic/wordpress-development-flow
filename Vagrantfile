@@ -65,6 +65,17 @@ if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
 fi
 echo "php:\t$(php -v)" | head -n 1
 
+if [[ ! -f /usr/bin/phpdoc ]]; then
+  echo "Installing phpDocumentator2"
+  sudo apt-get -y update
+  sudo apt-get -y install php5-xsl
+  sudo apt-get -y install graphviz
+  sudo apt-get -y install php-pear
+  sudo pear channel-discover pear.phpdoc.org
+  sudo pear install phpdoc/phpDocumentor-alpha
+fi
+echo "phpdoc:\t$(phpdoc --version)"
+
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
   sudo apt-get install python-software-properties -y

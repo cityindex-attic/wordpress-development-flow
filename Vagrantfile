@@ -85,11 +85,10 @@ if [ ! -f /usr/bin/stackato ]; then
 fi
 echo "stackato:\t$(stackato --version)"
 
-if [ ! -f /usr/bin/grunt ]; then
-  sudo npm install -g grunt-cli
-  sudo chown -R vagrant:vagrant /home/vagrant
+if [ ! -f /usr/bin/unison ]; then
+  sudo apt-get install unison -y
 fi
-echo "grunt:\t$(grunt --version)"
+echo "unison:\t$(unison -version)"
 
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 1
@@ -114,13 +113,11 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 4567, host: 4567
 
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", "1024"]
+    v.customize ["modifyvm", :id, "--memory", "512"]
   end
 
-  config.vm.provider :sync do |sync|
-    sync.local.folder = "src/"
-    sync.remote.folder = "src/"
-  end
+  config.sync.host_folder = "src"  #relative to the folder your Vagrantfile is in
+  config.sync.guest_folder = "src" #relative to the vagrant home folder -> ~/
 
   config.vm.provision :shell, :inline => $script
 end

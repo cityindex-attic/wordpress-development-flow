@@ -42,6 +42,11 @@ if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
 fi
 echo "ruby:\t$(ruby --version)"
 
+if [[ ! "$(bundle --version)" =~ "Bundler version 1.3.5" ]]; then
+  echo "Installing bundler..."
+  sudo gem install bundle --no-ri --no-rdoc
+fi
+
 if [ ! -f /usr/bin/mysql ]; then
   echo "Installing Mysql"
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password secret_password'
@@ -65,15 +70,6 @@ if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
 fi
 echo "php:\t$(php -v)" | head -n 1
 
-if [[ ! "$(node --version)" =~ "v0.10" ]]; then
-  echo "Installing nodejs"
-  sudo apt-get install python-software-properties -y
-  sudo add-apt-repository ppa:richarvey/nodejs -y  
-  sudo apt-get update
-  sudo apt-get install nodejs npm -y
-fi
-echo "node:\t$(node -v)"
-
 if [ ! -f /usr/bin/wp ]; then
   echo "Installing wp-cli"
   sudo curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
@@ -89,11 +85,10 @@ if [ ! -f /usr/bin/stackato ]; then
 fi
 echo "stackato:\t$(stackato --version)"
 
-if [ ! -f /usr/bin/grunt ]; then
-  sudo npm install -g grunt-cli
-  sudo chown -R vagrant:vagrant /home/vagrant
+if [ ! -f /usr/bin/unison ]; then
+  sudo apt-get install unison -y
 fi
-echo "grunt:\t$(grunt --version)"
+echo "unison:\t$(unison -version)"
 
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 1
@@ -104,7 +99,7 @@ echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
 
 echo "Configuring build dependancies"
-npm install
+bundle install
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"
@@ -118,13 +113,11 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 4567, host: 4567
 
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", "1024"]
+    v.customize ["modifyvm", :id, "--memory", "512"]
   end
 
-  config.vm.provider :sync do |sync|
-    sync.local.folder = "src/"
-    sync.remote.folder = "src/"
-  end
+  config.sync.host_folder = "src"  #relative to the folder your Vagrantfile is in
+  config.sync.guest_folder = "src" #relative to the vagrant home folder -> ~/
 
   config.vm.provision :shell, :inline => $script
 end

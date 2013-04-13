@@ -85,7 +85,7 @@
     end
     task :server_start do
       task_header("Starting server")
-      sh "cd ~/dist/ && bin/start.sh 4567 Verbose" # 'sh' streams the cmnd's stdout
+      sh "cd ./dist/ && bin/start.sh 4567 Verbose" # 'sh' streams the cmnd's stdout
     end
     task :all => [:mysql, :server_start] do
     end

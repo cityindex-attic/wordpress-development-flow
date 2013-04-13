@@ -153,6 +153,14 @@
   task :test => [:copy, :watcher]
 
   ##
+  desc "Generating wordpress documentation"
+  ##
+  task :docs do
+    task_header("Generating wordpress documentation")
+    sh "cd ./dist/public/docs &&  phpdoc -c ./phpdoc.xml"
+  end
+  
+  ##
   desc "default => [:run]"
   ##
   task :default => [:run] do

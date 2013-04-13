@@ -1,5 +1,5 @@
   require 'fileutils'
-  require 'guard'
+  require 'listen'
 
   ##
   desc "delete created assets"
@@ -33,15 +33,30 @@
   end
   #end copy files and directories
 
+  watcher_changes_callback = Proc.new do |modified_list, added_list, removed_list|
+    puts "watcher triggered"
+    (modified_list << added_list).flatten.each do |modified|
+      targetLocation = modified.sub('src/', 'dist/')  
+      FileUtils.mkdir_p(File.dirname(targetLocation));  
+      FileUtils.cp(modified, targetLocation)  
+      puts "\tcopying #{modified} to #{targetLocation}"
+    end
+    removed_list.each do |removed|
+      targetLocation = removed.sub('src/', 'dist/')  
+      FileUtils.rm(targetLocation)  
+      puts "\tdeleting #{targetLocation}"
+    end
+  end
+
   ##
   desc "Watch files"
   ##
   task :watcher do
     task_header("Watch files")
-    Guard.setup
-    copy = Guard.guards('copy')
-    copy.start
-    copy.run_all
+    listener = Listen.to('src')
+    listener.change(&watcher_changes_callback)
+    listener.start(false) # non-blocking execution
+    puts "Started watcher on src/"
   end
   #end watch files
 

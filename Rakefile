@@ -87,7 +87,7 @@
       task_header("Starting server")
       sh "cd ./dist/ && bin/start.sh 4567 Verbose" # 'sh' streams the cmnd's stdout
     end
-    task :all => [:mysql, :server_start] do
+    task :all => [:mysql, :watcher, :server_start] do
     end
   end
   #end dev server setup

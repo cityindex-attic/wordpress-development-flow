@@ -152,13 +152,28 @@
   ##
   task :test => [:copy, :watcher]
 
-  ##
-  desc "Generating wordpress documentation"
-  ##
-  task :docs do
-    task_header("Generating wordpress documentation")
-    sh "cd ./dist/public/docs &&  phpdoc -c ./phpdoc.xml"
-  end
+  ##                                                                                             │/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/
+  desc "Generating wordpress documentation"                                                      │application.rb:101:in `block in top_level'    
+  ##                                                                                             │/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/
+  task :docs, :type, :name do |t, args|                                                          │application.rb:110:in `run_with_threads'      
+    source = "/home/vagrant/dist/public/wp-content/#{args.type}/#{args.name}"                    │/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/
+    target = "/home/vagrant/dist/public/docs/#{args.type}/#{args.name}"                          │application.rb:95:in `top_level'              
+    puts "Generating docs..."                                                                    │/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/
+    puts "Source: #{source}"                                                                     │application.rb:73:in `block in run'           
+    puts "Target: #{target}"                                                                     │/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/
+                                                                                                 │application.rb:160:in `standard_exception_hand
+    #get source switch for phpdoc                                                                │ling'                                         
+    if File.extname(source) == ".php"                                                            │/var/lib/gems/1.9.1/gems/rake-10.0.4/lib/rake/
+      source_switch = "-f #{source}"                                                             │application.rb:70:in `run'                    
+    else                                                                                         │Tasks: TOP => run => dev_server:all => dev_ser
+      source_switch = "-d #{source}"                                                             │ver:server_start                              
+    end                                                                                          │(See full trace by running task with --trace) 
+    #end get source                                                                              │vagrant@precise64:~$ ./dist/bin/start.sh      
+                                                                                                 │bin/start {port} {loglevel}                   
+    FileUtils.mkdir_p( target )                                                                  │vagrant@precise64:~$ ./dist/bin/start.sh 4567 
+                                                                                                 │-----> BASE_DIR: /home/vagrant/dist           
+    sh "phpdoc -t #{target} #{source_switch}"                                                    │-----> Writing config files...                
+  end                                                                                            │-----> Using LOGLEVEL: Error [options: None | 
   
   ##
   desc "default => [:run]"

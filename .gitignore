@@ -13,7 +13,6 @@ _site
 *.vi
 *~
 *.sass-cache
-
 # OS or Editor folders
 .DS_Store
 ._*
@@ -26,11 +25,9 @@ Thumbs.db
 nbproject
 *.sublime-project
 *.sublime-workspace
-
 # Komodo
 *.komodoproject
 .komodotools
-
 # Folders to ignore
 .hg
 .svn
@@ -39,3 +36,4 @@ nbproject
 node_modules
 dist
 .vagrant
+/*.logs

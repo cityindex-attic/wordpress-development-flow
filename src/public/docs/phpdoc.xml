@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <parser>
+    <target>/home/vagrant/dist/public/docs</target>
+  </parser>
+  <transformer>
+    <target>/home/vagrant/dist/public/docs</target>
+  </transformer>
+  <files>
+    <directory>/home/vagrant/dist/public</directory>
+  </files>
+  <ignore>/home/vagrant/dist/public/docs</ignore>
+</phpdoc>

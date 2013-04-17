@@ -152,9 +152,30 @@
   ##
   task :test => [:copy, :watcher]
 
-  ##
-  desc "default => [:run]"
-  ##
+  ##                                                                                            
+  desc "Generating wordpress documentation"                                                     
+  ##                                                                                            
+  task :docs, :type, :name do |t, args|                                                         
+    source = "/home/vagrant/dist/public/wp-content/#{args.type}/#{args.name}"                   
+    target = "/home/vagrant/dist/public/docs/#{args.type}/#{args.name}"                         
+    puts "Generating docs..."                                                                   
+    puts "Source: #{source}"                                                                    
+    puts "Target: #{target}"                                                                    
+                                                                                                
+    #get source switch for phpdoc                                                               
+    if File.extname(source) == ".php"                                                           
+      source_switch = "-f #{source}"                                                            
+    else                                                                                        
+      source_switch = "-d #{source}"                                                            
+    end                                                                                         
+    #end get source                                                                             
+                                                                                                
+    FileUtils.mkdir_p( target )                                                                 
+                                                                                                
+    sh "phpdoc -t #{target} #{source_switch}"                                                   
+  end   
+                                                      
+  ##                                                                                           
   task :default => [:run] do
     puts "Ready for the day!"
     puts ""

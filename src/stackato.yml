@@ -1,4 +1,4 @@
-name: pressupbox-development-boilerplate
+name: wordpress-development-flow
 instances: 1
 framework:
   type: buildpack

@@ -8,8 +8,8 @@ echo "curl:\t$(curl --version)" | head -n 1
 
 if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "Upgrading VBoxGuestAdditions"
-  curl --location http://download.virtualbox.org/virtualbox/4.2.10/VBoxGuestAdditions_4.2.10.iso > /home/vagrant/VBoxGuestAdditions_4.2.10.iso
-  sudo mount /home/vagrant/VBoxGuestAdditions_4.2.10.iso -o loop /mnt
+  curl --location http://download.virtualbox.org/virtualbox/4.2.10/VBoxGuestAdditions_4.2.10.iso > /tmp/VBoxGuestAdditions_4.2.10.iso
+  sudo mount /tmp/VBoxGuestAdditions_4.2.10.iso -o loop /mnt
   sudo apt-get install build-essential module-assistant linux-headers-$(uname -r) -y
   sudo sh /mnt/VBoxLinuxAdditions.run --nox11
   echo "=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-="
@@ -112,8 +112,8 @@ echo "unison:\t$(unison -version)"
 
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 1
-rm /home/vagrant/VBoxGuestAdditions_4.2.10.iso
-rm /home/vagrant/postinstall.sh
+rm -f /home/vagrant/postinstall.sh
+rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
 echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/

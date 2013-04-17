@@ -1,15 +1,15 @@
-# [PressupBox Development Boilerplate](http://#)
+# [WordPress Development Flow](http://#)
 
-[![Build Status](http://ci.labs.cityindex.com:8080/job/pressupbox-development-boilerplate/badge/icon)](http://ci.labs.cityindex.com:8080/job/pressupbox-development-boilerplate/)
+[![Build Status](http://ci.labs.cityindex.com:8080/job/wordpress-development-flow/badge/icon)](http://ci.labs.cityindex.com:8080/job/wordpress-development-flow/)
 
-PressupBox Development Boilerplate is a development workflow aimed at distributed teams working on WordPress projects.
+WordPress Development Flow is a development workflow aimed at distributed teams working on WordPress projects.
 
 ## Getting started
 
-* [Conceptual Overview](https://github.com/mrdavidlaing/pressupbox-development-boilerplate/wiki/Conceptual-Overview)
-* [Setting up your development environment](https://github.com/mrdavidlaing/pressupbox-development-boilerplate/wiki/Setting-up-your-dev-environment)
+* [Conceptual Overview](https://github.com/cityindex/wordpress-development-flow/wiki/Conceptual-Overview)
+* [Setting up your development environment](https://github.com/cityindex/wordpress-development-flow/wiki/Setting-up-your-dev-environment)
 
-See the [wiki](https://github.com/mrdavidlaing/pressupbox-development-boilerplate/wiki) for further documentation.
+See the [wiki](https://github.com/cityindex/wordpress-development-flow/wiki) for further documentation.
 
 ## Support
 
@@ -29,7 +29,7 @@ easy and effective for everyone, in particular:
 
 ## License
 
-Copyright 2013 David Laing.
+Copyright 2013 City Index Ltd.
 
 Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in
 compliance with the License. You may obtain a copy of the License at

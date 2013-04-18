@@ -115,6 +115,16 @@ sudo apt-get autoremove -y | tail -n 1
 rm -f /home/vagrant/postinstall.sh
 rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
+if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
+  echo 'Patching basebox to prevent future `stdin: is not a tty` errors...'
+  sed -i '$d' /root/.profile
+  cat << 'EOH' >> /root/.profile
+  if `tty -s`; then
+    mesg n
+  fi
+EOH
+fi
+
 echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
 

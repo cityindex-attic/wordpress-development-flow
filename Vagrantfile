@@ -129,7 +129,7 @@ echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Running Bootloader"                                                           
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 cd /home/vagrant
-su vagrant -c "rake run"
+su -c "rake run" vagrant
 SCRIPT
 
 Vagrant.configure("2") do |config|                                                                                                                                                        

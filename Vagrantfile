@@ -124,9 +124,15 @@ bundle install
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"
 echo "=-=-=-=-=-=-=-=-=-=-=-="
+
+echo "=-=-=-=-=-=-=-=-=-=-=-="
+echo "Running Bootloader"                                                           
+echo "=-=-=-=-=-=-=-=-=-=-=-="
+cd /home/vagrant
+su -c "rake run" vagrant
 SCRIPT
 
-Vagrant.configure("2") do |config|
+Vagrant.configure("2") do |config|                                                                                                                                                        
   config.vm.box = "pressupbox-development-boilerplate-20130327"
   config.vm.box_url = "https://s3-eu-west-1.amazonaws.com/ci-vagrantboxes/pressupbox-development-boilerplate-20130327.box"
 

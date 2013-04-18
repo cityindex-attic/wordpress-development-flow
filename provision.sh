@@ -42,9 +42,10 @@ if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
 fi
 echo "ruby:\t$(ruby --version)"
 
-if [[ ! "$(bundle --version)" =~ "Bundler version 1.3.5" ]]; then
-  echo "Installing bundler..."
+if [[ "$(gem query -n bundler -d | wc -l)" =~ "1" ]]; then
   sudo gem install bundle --no-ri --no-rdoc
+else
+  bundle --version
 fi
 
 if [ ! -f /usr/bin/mysql ]; then

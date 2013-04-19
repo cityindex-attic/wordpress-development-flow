@@ -1,5 +1,12 @@
 #!/bin/bash
 
+echo "Setting perl:locale to en_US.UTF8"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+sudo dpkg-reconfigure locales
+
 if [ ! -f /usr/bin/curl ]; then
   echo "Installing curl"
   sudo apt-get install curl -y
@@ -74,9 +81,7 @@ echo "php:\t$(php -v)" | head -n 1
 if [[ ! -f /usr/bin/phpdoc ]]; then
   echo "Installing phpDocumentator2"
   sudo apt-get -y update
-  sudo apt-get -y install php5-xsl
-  sudo apt-get -y install graphviz
-  sudo apt-get -y install php-pear
+  sudo apt-get -y install php5-xsl graphviz php-pear 2>/dev/null
   sudo pear channel-discover pear.phpdoc.org
   sudo pear install phpdoc/phpDocumentor-alpha
 fi

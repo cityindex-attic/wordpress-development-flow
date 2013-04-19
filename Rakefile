@@ -97,7 +97,7 @@
       task_header("Setting up MySql")
       sh "mysqladmin -uroot -psecret_password create wordpress" do |ok,res|
         if ok
-          sh "mysql -uroot -psecret_password wordpress < wordpress.sample.sql"
+          sh "mysql -uroot -psecret_password wordpress < tests/wordpress.sample.sql"
         end
       end
     end

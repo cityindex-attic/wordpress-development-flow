@@ -142,9 +142,3 @@ bundle install
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"
 echo "=-=-=-=-=-=-=-=-=-=-=-="
-
-echo "=-=-=-=-=-=-=-=-=-=-=-="
-echo "Running Bootloader"                                                           
-echo "=-=-=-=-=-=-=-=-=-=-=-="
-cd /home/vagrant
-su -c "rake run" vagrant

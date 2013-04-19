@@ -1,5 +1,12 @@
 #!/bin/bash
 
+echo "Setting perl:locale to en_US.UTF8"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+sudo dpkg-reconfigure locales
+
 if [ ! -f /usr/bin/curl ]; then
   echo "Installing curl"
   sudo apt-get install curl -y
@@ -8,8 +15,8 @@ echo "curl:\t$(curl --version)" | head -n 1
 
 if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "Upgrading VBoxGuestAdditions"
-  curl --location http://download.virtualbox.org/virtualbox/4.2.10/VBoxGuestAdditions_4.2.10.iso > /home/vagrant/VBoxGuestAdditions_4.2.10.iso
-  sudo mount /home/vagrant/VBoxGuestAdditions_4.2.10.iso -o loop /mnt
+  curl --location http://download.virtualbox.org/virtualbox/4.2.10/VBoxGuestAdditions_4.2.10.iso > /tmp/VBoxGuestAdditions_4.2.10.iso
+  sudo mount /tmp/VBoxGuestAdditions_4.2.10.iso -o loop /mnt
   sudo apt-get install build-essential module-assistant linux-headers-$(uname -r) -y
   sudo sh /mnt/VBoxLinuxAdditions.run --nox11
   echo "=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-="
@@ -74,9 +81,7 @@ echo "php:\t$(php -v)" | head -n 1
 if [[ ! -f /usr/bin/phpdoc ]]; then
   echo "Installing phpDocumentator2"
   sudo apt-get -y update
-  sudo apt-get -y install php5-xsl
-  sudo apt-get -y install graphviz
-  sudo apt-get -y install php-pear
+  sudo apt-get -y install php5-xsl graphviz php-pear 2>/dev/null
   sudo pear channel-discover pear.phpdoc.org
   sudo pear install phpdoc/phpDocumentor-alpha
 fi
@@ -113,8 +118,18 @@ echo "unison:\t$(unison -version)"
 
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 1
-rm /home/vagrant/VBoxGuestAdditions_4.2.10.iso
-rm /home/vagrant/postinstall.sh
+rm -f /home/vagrant/postinstall.sh
+rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
+
+if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
+  echo 'Patching basebox to prevent future `stdin: is not a tty` errors...'
+  sed -i '$d' /root/.profile
+  cat << 'EOH' >> /root/.profile
+  if `tty -s`; then
+    mesg n
+  fi
+EOH
+fi
 
 echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/

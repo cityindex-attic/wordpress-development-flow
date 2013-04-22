@@ -75,7 +75,7 @@
       sh "git --git-dir ./buildpack/.git pull"
     else
       puts "\tCloning buildpack"
-      sh "git clone git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"
+      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"
     end
   end
   #end Git refresh buildpack

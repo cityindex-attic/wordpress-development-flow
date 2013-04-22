@@ -1,11 +1,23 @@
 #!/bin/bash
 
-echo "Setting perl:locale to en_US.UTF8"
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-locale-gen en_US.UTF-8
-sudo dpkg-reconfigure locales
+if [[ ! "$(locale)" =~ "en_US.utf8" ]]; then
+  echo "Setting perl:locale to en_US.UTF8"
+  export LANGUAGE=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  locale-gen en_US.UTF-8
+  sudo dpkg-reconfigure locales
+fi
+
+if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
+  echo 'Patching basebox to prevent future `stdin: is not a tty` errors...'
+  sed -i '$d' /root/.profile
+  cat << 'EOH' >> /root/.profile
+  if `tty -s`; then
+    mesg n
+  fi
+EOH
+fi
 
 if [ ! -f /usr/bin/curl ]; then
   echo "Installing curl"
@@ -135,16 +147,6 @@ sudo apt-get autoremove -y | tail -n 1
 rm -f /home/vagrant/postinstall.sh
 rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
-if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
-  echo 'Patching basebox to prevent future `stdin: is not a tty` errors...'
-  sed -i '$d' /root/.profile
-  cat << 'EOH' >> /root/.profile
-  if `tty -s`; then
-    mesg n
-  fi
-EOH
-fi
-
 echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
 
@@ -154,9 +156,3 @@ bundle install
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"
 echo "=-=-=-=-=-=-=-=-=-=-=-="
-
-echo "=-=-=-=-=-=-=-=-=-=-=-="
-echo "Running Bootloader"                                                           
-echo "=-=-=-=-=-=-=-=-=-=-=-="
-cd /home/vagrant
-su -c "rake run" vagrant

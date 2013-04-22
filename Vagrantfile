@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 4567, host: 4567
 
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", "512"]
+    v.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
   config.sync.host_folder = "src"  #relative to the folder your Vagrantfile is in

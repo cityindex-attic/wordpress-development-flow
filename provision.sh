@@ -118,6 +118,13 @@ if [ ! -f /usr/bin/stackato ]; then
 fi
 echo "stackato:\t$(stackato --version)"
 
+echo "Setting perl:locale to en_US.UTF8"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+sudo dpkg-reconfigure locales
+
 if [ ! -f /usr/bin/unison ]; then
   sudo apt-get install unison -y
 fi

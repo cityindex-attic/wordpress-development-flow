@@ -37,6 +37,13 @@ if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   exit 1
 fi 
 
+echo "Setting perl:locale to en_US.UTF8"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+sudo dpkg-reconfigure locales
+
 if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
   echo "Upgrading ruby to 1.9.1"
   sudo apt-get install ruby1.9.1 ruby1.9.1-dev \
@@ -122,6 +129,13 @@ if [ ! -f /usr/bin/stackato ]; then
     sudo rm -rf /tmp/stackato*
 fi
 echo "stackato:\t$(stackato --version)"
+
+echo "Setting perl:locale to en_US.UTF8"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+locale-gen en_US.UTF-8
+sudo dpkg-reconfigure locales
 
 if [ ! -f /usr/bin/unison ]; then
   sudo apt-get install unison -y

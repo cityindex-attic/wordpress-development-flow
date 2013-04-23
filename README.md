@@ -5,7 +5,9 @@
 WordPress Development Flow is a development workflow aimed at distributed teams working on WordPress projects.
 
 ## Getting started
+[![Overview screencast](https://f.cloud.github.com/assets/227505/414448/6e30a4aa-ac18-11e2-8429-bce2babff4bb.png)](https://cityindex.viewscreencasts.com/22c637e286ada3dc1eb3088ded59a865)
 
+* [Overview screencast](https://cityindex.viewscreencasts.com/22c637e286ada3dc1eb3088ded59a865)
 * [Conceptual Overview](https://github.com/cityindex/wordpress-development-flow/wiki/Conceptual-Overview)
 * [Setting up your development environment](https://github.com/cityindex/wordpress-development-flow/wiki/Setting-up-your-dev-environment)
 

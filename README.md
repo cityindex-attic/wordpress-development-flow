@@ -16,7 +16,7 @@ See the [wiki](https://github.com/cityindex/wordpress-development-flow/wiki) for
 ## Support
 
 * Project Manager: [David Laing](http://github.com/mrdavidlaing)
-* TODO - create Google Group
+* Announcements and discussion: [Google Group Email list](https://groups.google.com/forum/?fromgroups#!forum/wordpress-development-flow)
 
 ## Contributing to this project (bug reports, feature requests, pull requests)
 

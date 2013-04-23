@@ -109,7 +109,7 @@
       sh "export LC_ALL=\"#{lang}\""
       sh "locale-gen \"#{lang}\""
       sh "sudo dpkg-reconfigure locales"
-      sh "cd ./dist/ && bin/start.sh 4567 Verbose" # 'sh' streams the cmnd's stdout
+      sh "cd ./dist/ && bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
     end
     task :server_start_debug do
       task_header("Starting XDebug server.  Have your a DBGp debugger listen on port 9000")

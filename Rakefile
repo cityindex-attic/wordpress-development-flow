@@ -27,7 +27,7 @@
     puts "\tcopying #{src_file} to #{targetLocation}"
     
     FileUtils.mkdir_p(File.dirname(targetLocation));  
-    FileUtils.cp(modified, targetLocation)  
+    FileUtils.cp(src_file, targetLocation) unless File.directory?(src_file)
   end
 
   watcher_changes_callback = Proc.new do |modified_list, added_list, removed_list|

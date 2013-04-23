@@ -5,49 +5,40 @@
   desc "delete created assets"
   ##
   task :clean do
-    #Delete everything below dist/ except .gitkeep - http://whileonefork.blogspot.hu/2011/02/bash-delete-directories-except-that-one.html
-    puts "Deleting everything below dist/ (except dist/.gitkeep)"
-    sh 'rm -rf $(echo dist/* | tr " " "\n" | grep -v .gitkeep | tr "\n" " ")'
+    puts "Deleting dist/"
+    sh 'rm -rf dist/'
   end
 
   ##
   desc "copy files and directories"
   ##
   task :copy do
-    @source = "src"
-    @target = "dist"
-    @pattern = "/**/*"
-    files = FileList.new("#{@source}#{@pattern}").exclude(/\.less$/i)
     task_header("Copy")
 
-    files.each do |file|
-      targetLocation = file.sub(@source, @target)
-      puts "\tcopying #{file} to #{targetLocation}"      #create target location file string (replace source with target in path)  
-      #create directory
-      if File.directory?(file)
-        FileUtils.mkdir_p(targetLocation, :verbose => true);
-      end
-      #copy file
-      if File.file?(file)
-        FileUtils.cp(file, targetLocation, :verbose => true);
-      end
+    files = FileList.new("src/**/*").exclude(/\.less$/i)
+    files.each do |src_file|
+      copy_src_file_to_dist src_file
     end
-    puts "\n"
   end
   #end copy files and directories
 
+  def copy_src_file_to_dist(src_file)
+    targetLocation = src_file.sub('src/', 'dist/')  
+    puts "\tcopying #{src_file} to #{targetLocation}"
+    
+    FileUtils.mkdir_p(File.dirname(targetLocation));  
+    FileUtils.cp(modified, targetLocation)  
+  end
+
   watcher_changes_callback = Proc.new do |modified_list, added_list, removed_list|
     puts "watcher triggered"
-    (modified_list << added_list).flatten.each do |modified|
-      targetLocation = modified.sub('src/', 'dist/')  
-      FileUtils.mkdir_p(File.dirname(targetLocation));  
-      FileUtils.cp(modified, targetLocation)  
-      puts "\tcopying #{modified} to #{targetLocation}"
+    (modified_list << added_list).flatten.each do |file|
+      copy_src_file_to_dist file
     end
     removed_list.each do |removed|
       targetLocation = removed.sub('src/', 'dist/')  
-      FileUtils.rm(targetLocation)  
       puts "\tdeleting #{targetLocation}"
+      FileUtils.rm(targetLocation)  
     end
   end
 

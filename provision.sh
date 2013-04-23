@@ -1,4 +1,9 @@
 #!/bin/bash
+
+function indent() {
+  sed -u "s/^/       /"
+}
+
 DEFAULT_LOCALE="en_US.UTF-8"
 if [[ ! "$(locale)" =~ "$DEFAULT_LOCALE" ]]; then
   echo "-----> Setting default locale to: $DEFAULT_LOCALE"
@@ -22,7 +27,7 @@ if [ ! -f /usr/bin/curl ]; then
   echo "Installing curl"
   sudo apt-get install curl -y
 fi
-echo "curl:\t$(curl --version)" | head -n 1
+echo "curl:    $(curl --version)" | head -n 1
 
 if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "Upgrading VBoxGuestAdditions"
@@ -58,12 +63,10 @@ if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
 
   echo -e "#Ensure gems are in path\nexport PATH=\$PATH:/var/lib/gems/1.9.1/bin/" >> /etc/profile
 fi
-echo "ruby:\t$(ruby --version)"
+echo "ruby:    $(ruby --version)"
 
 if [[ "$(gem query -n bundler -d | wc -l)" =~ "1" ]]; then
   sudo gem install bundle --no-ri --no-rdoc
-else
-  bundle --version
 fi
 
 if [ ! -f /usr/bin/mysql ]; then
@@ -72,13 +75,13 @@ if [ ! -f /usr/bin/mysql ]; then
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password secret_password'
   sudo apt-get install mysql-server-5.5 -y
 fi
-echo "mysql:\t$(mysql --version)"
+echo "mysql:   $(mysql --version)"
 
 if [ ! -f /usr/bin/git ]; then
   echo "Installing git"
   sudo apt-get install git-core -y
 fi
-echo "git:\t$(git --version)"
+echo "git:     $(git --version)"
 
 if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
   echo "Installing PHP5"
@@ -87,7 +90,7 @@ if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
   sudo apt-get update
   sudo apt-get install php5 php5-mysql -y
 fi
-echo "php:\t$(php -v)" | head -n 1
+echo "php:     $(php -v)" | head -n 1
 
 if [[ ! -f /usr/bin/phpdoc ]]; then
   echo "Installing phpDocumentator2"
@@ -96,7 +99,7 @@ if [[ ! -f /usr/bin/phpdoc ]]; then
   sudo pear channel-discover pear.phpdoc.org
   sudo pear install phpdoc/phpDocumentor-alpha
 fi
-echo "phpdoc:\t$(phpdoc --version)"
+echo "phpdoc:  $(phpdoc --version)"
 
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
@@ -105,7 +108,7 @@ if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   sudo apt-get update
   sudo apt-get install nodejs npm -y
 fi
-echo "node:\t$(node -v)"
+echo "node:    $(node -v)"
 
 if [ ! -f /usr/bin/wp ]; then
   echo "Installing wp-cli"
@@ -120,16 +123,15 @@ if [ ! -f /usr/bin/stackato ]; then
     sudo mv /tmp/stackato-1.6.1-linux-glibc2.3-x86_64/stackato /usr/bin
     sudo rm -rf /tmp/stackato*
 fi
-echo "stackato:\t$(stackato --version)"
-
+echo "stackato:$(stackato --version)"
 
 if [ ! -f /usr/bin/unison ]; then
   sudo apt-get install unison -y
 fi
-echo "unison:\t$(unison -version)"
+echo "unison:  $(unison -version)"
 
 echo "Clean up..."
-sudo apt-get autoremove -y | tail -n 1
+sudo apt-get autoremove -y | tail -n 2 | indent
 rm -f /home/vagrant/postinstall.sh
 rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
@@ -137,7 +139,7 @@ echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
 
 echo "Configuring build dependancies"
-bundle install
+bundle install | indent
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

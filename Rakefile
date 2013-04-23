@@ -94,13 +94,7 @@
     end
     task :server_start do
       task_header("Starting server")
-      lang = "en_US.utf8"
-      sh "export LANGUAGE=\"#{lang}\""
-      sh "export LANG=\"#{lang}\""
-      sh "export LC_ALL=\"#{lang}\""
-      sh "locale-gen \"#{lang}\""
-      sh "sudo dpkg-reconfigure locales"
-      sh "cd ./dist/ && bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
+      sh "dist/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
     end
     task :server_start_debug do
       task_header("Starting XDebug server.  Have your a DBGp debugger listen on port 9000")

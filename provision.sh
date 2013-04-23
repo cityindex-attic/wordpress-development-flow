@@ -1,13 +1,12 @@
 #!/bin/bash
-
-if [[ ! "$(locale)" =~ "en_US.utf8" ]]; then
-  echo "Setting perl:locale to en_US.UTF8"
-  export LANGUAGE=en_US.UTF-8
-  export LANG=en_US.UTF-8
-  export LC_ALL=en_US.UTF-8
-  locale-gen en_US.UTF-8
+DEFAULT_LOCALE="en_US.UTF-8"
+if [[ ! "$(locale)" =~ "$DEFAULT_LOCALE" ]]; then
+  echo "-----> Setting default locale to: $DEFAULT_LOCALE"
+  echo -e "LANG=$DEFAULT_LOCALE\nLANGUAGE=$DEFAULT_LOCALE\nLC_ALL=$DEFAULT_LOCALE" | sudo tee /etc/default/locale
+  locale-gen $DEFAULT_LOCALE
   sudo dpkg-reconfigure locales
 fi
+echo "locale:  $(locale)" | head -n 1
 
 if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
   echo 'Patching basebox to prevent future `stdin: is not a tty` errors...'
@@ -36,13 +35,6 @@ if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-="
   exit 1
 fi 
-
-echo "Setting perl:locale to en_US.UTF8"
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-locale-gen en_US.UTF-8
-sudo dpkg-reconfigure locales
 
 if [[ ! "$(ruby --version)" =~ "ruby 1.9.3" ]]; then
   echo "Upgrading ruby to 1.9.1"
@@ -130,12 +122,6 @@ if [ ! -f /usr/bin/stackato ]; then
 fi
 echo "stackato:\t$(stackato --version)"
 
-echo "Setting perl:locale to en_US.UTF8"
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-locale-gen en_US.UTF-8
-sudo dpkg-reconfigure locales
 
 if [ ! -f /usr/bin/unison ]; then
   sudo apt-get install unison -y

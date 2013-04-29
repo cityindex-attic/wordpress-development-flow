@@ -110,6 +110,15 @@ if [[ ! "$(node --version)" =~ "v0.10" ]]; then
 fi
 echo "node:    $(node -v)"
 
+if [ ! -f /usr/local/ti-debug/bin/ti-debug ]; then
+  echo "Installing ti-debug"
+  git clone https://github.com/dpb587/ti-debug /usr/local/ti-debug
+  pushd /usr/local/ti-debug
+  npm install
+  popd
+fi
+echo "ti-debug:$(/usr/local/ti-debug/bin/ti-debug --version)"
+
 if [ ! -f /usr/bin/wp ]; then
   echo "Installing wp-cli"
   sudo curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp

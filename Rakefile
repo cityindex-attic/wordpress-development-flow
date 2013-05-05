@@ -97,7 +97,7 @@
       sh "dist/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
     end
     task :ti_debug do
-      task_header("Starting ti-debug server - browse to http://localhost:9222")
+      task_header("Starting browser based debug server (ti-debug)")
       sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
     end
     task :server_start_debug do
@@ -150,6 +150,11 @@
   desc "run  => [:build, :verify_hosting_dependencies, dev_server:all]"
   ##
   task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
+
+  ##
+  desc "debug  => [:build, :verify_hosting_dependencies, dev_server:all]"
+  ##
+  task :debug => [:build, :verify_hosting_dependencies, "dev_server:all_debug"]
 
   ##
   desc "test => [:copy, :watcher]"

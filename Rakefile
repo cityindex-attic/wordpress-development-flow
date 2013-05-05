@@ -187,7 +187,8 @@
   #end default
 
   def task_header(title)
-    puts "\n##########################"
-    puts "#\t#{title}"
-    puts "##########################"
+    banner = "#" * (title.length + 4)
+    puts "\n#{banner}"
+    puts "# #{title} #" 
+    puts "#{banner}"
   end

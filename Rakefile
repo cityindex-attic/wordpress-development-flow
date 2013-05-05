@@ -93,15 +93,19 @@
       end
     end
     task :server_start do
-      task_header("Starting server")
+      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
       sh "dist/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
     end
+    task :ti_debug do
+      task_header("Starting ti-debug server - browse to http://localhost:9222")
+      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
+    end
     task :server_start_debug do
-      task_header("Starting XDebug server")
-      sh "dist/bin/start.sh 4567 Debug" # 'sh' streams the cmnd's stdout
+      task_header("Starting server (PHP 5.4 Dev server with XDebug) - browse to http://localhost:4567")
+      sh "dist/bin/start.sh 4567 Debug" 
     end
     desc "Start dev server (PHP 5.4 with XDebug)"
-    task :all_debug => [:mysql, :watcher, :server_start_debug] 
+    task :all_debug => [:mysql, :watcher, :ti_debug, :server_start_debug] 
     desc "Start dev server (HipHop)"
     task :all => [:mysql, :watcher, :server_start] 
   end

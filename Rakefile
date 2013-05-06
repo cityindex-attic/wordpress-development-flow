@@ -63,10 +63,13 @@
     if Dir.exists?("./buildpack/.git")
       puts "\tUpdating buildpack"
       sh "git --git-dir ./buildpack/.git reset --hard HEAD"
+      sh "git --git-dir ./buildpack/.git checkout browser-based-debugging"
+      sh "git --git-dir ./buildpack/.git reset --hard browser-based-debugging"
       sh "git --git-dir ./buildpack/.git pull"
     else
       puts "\tCloning buildpack"
       sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"
+      sh "git --git-dir ./buildpack/.git checkout browser-based-debugging"
     end
   end
   #end Git refresh buildpack

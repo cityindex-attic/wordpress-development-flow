@@ -14,7 +14,5 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, :path => "provision.sh"
 
-  #This must point to a https://github.com/mrdavidlaing/stackato-buildpack-wordpress working copy on the browser-based-debugging branch
-  config.vm.synced_folder "/Users/mrdavidlaing/Projects/mrdavidlaing/stackato-buildpack-wordpress", "/home/vagrant/buildpack"
 end
 

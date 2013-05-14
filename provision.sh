@@ -110,6 +110,16 @@ if [[ ! "$(node --version)" =~ "v0.10" ]]; then
 fi
 echo "node:    $(node -v)"
 
+if [ ! -f /usr/local/ti-debug/bin/dbgp ]; then
+  echo "Installing ti-debug"
+  git clone https://github.com/dpb587/ti-debug /usr/local/ti-debug
+  pushd /usr/local/ti-debug
+  git checkout 15e99b28057fbd57342f120005226868d40fa19a --force
+  npm install
+  popd
+fi
+echo "ti-debug:$(/usr/local/ti-debug/bin/dbgp --version)"
+
 if [ ! -f /usr/bin/wp ]; then
   echo "Installing wp-cli"
   sudo curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
@@ -117,10 +127,10 @@ if [ ! -f /usr/bin/wp ]; then
 fi
 
 if [ ! -f /usr/bin/stackato ]; then
-    sudo curl -k --location -o /tmp/stackato.zip https://api.stackato.cil.stack.me/static/stackato-1.6.1-linux-glibc2.3-x86_64.zip 
+    sudo curl -k --location -o /tmp/stackato.zip http://downloads.activestate.com/stackato/client/v1.7.2/stackato-1.7.2-linux-glibc2.3-x86_64.zip 
     sudo apt-get install unzip -y 
     sudo unzip /tmp/stackato.zip -d /tmp
-    sudo mv /tmp/stackato-1.6.1-linux-glibc2.3-x86_64/stackato /usr/bin
+    sudo mv /tmp/stackato-1.7.2-linux-glibc2.3-x86_64/stackato /usr/bin
     sudo rm -rf /tmp/stackato*
 fi
 echo "stackato:$(stackato --version)"

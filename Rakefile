@@ -68,10 +68,6 @@
       puts "\tCloning buildpack"
       sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"     
     end
-    #Temp - switch to the browser-based-debugging branch
-    sh "git --git-dir ./buildpack/.git fetch"
-    sh "git --git-dir ./buildpack/.git checkout browser-based-debugging --force"
-    sh "cd buildpack && git checkout ."
   end
   #end Git refresh buildpack
 
@@ -105,12 +101,15 @@
       sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
     end
     task :server_start_debug do
-      task_header("Starting server (PHP 5.4 Dev server with XDebug) - browse to http://localhost:4567")
+      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
       sh "dist/bin/start.sh 4567 Debug" 
     end
-    desc "Start dev server (PHP 5.4 with XDebug)"
+    task :server_start_debug_ide do
+      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
+      sh "dist/bin/start.sh 4567 Debug_IDE" 
+    end
+    task :all_debug_ide => [:mysql, :watcher, :server_start_debug_ide] 
     task :all_debug => [:mysql, :watcher, :ti_debug, :server_start_debug] 
-    desc "Start dev server (HipHop)"
     task :all => [:mysql, :watcher, :server_start] 
   end
   #end dev server setup
@@ -150,15 +149,15 @@
   desc "[:clean, :build]"
   task :rebuild => [:clean, :build]
 
-  ##
-  desc "run  => [:build, :verify_hosting_dependencies, dev_server:all]"
-  ##
+  desc "Start dev server (HipHop)"
   task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
+  namespace :run do
+    desc "Start dev server (PHP 5.4 with browser based debugger)"
+    task :debug => [:build, :verify_hosting_dependencies, "dev_server:all_debug"]
 
-  ##
-  desc "debug  => [:build, :verify_hosting_dependencies, dev_server:all]"
-  ##
-  task :debug => [:build, :verify_hosting_dependencies, "dev_server:all_debug"]
+    desc "Start dev server (PHP 5.4 with XDebug)"
+    task :debug_ide => [:build, :verify_hosting_dependencies, "dev_server:all_debug_ide"]
+  end
 
   ##
   desc "test => [:copy, :watcher]"

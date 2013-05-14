@@ -66,7 +66,7 @@
       sh "git --git-dir ./buildpack/.git pull"
     else
       puts "\tCloning buildpack"
-      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"
+      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"     
     end
   end
   #end Git refresh buildpack
@@ -93,16 +93,23 @@
       end
     end
     task :server_start do
-      task_header("Starting server")
+      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
       sh "dist/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
     end
-    task :server_start_debug do
-      task_header("Starting XDebug server.  Have your a DBGp debugger listen on port 9000")
-      sh "dist/bin/start.sh 4567 Debug" # 'sh' streams the cmnd's stdout
+    task :ti_debug do
+      task_header("Starting browser based debug server (ti-debug)")
+      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
     end
-    desc "Start dev server (PHP 5.4 with XDebug)"
-    task :all_debug => [:mysql, :watcher, :server_start_debug] 
-    desc "Start dev server (HipHop)"
+    task :server_start_debug do
+      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
+      sh "dist/bin/start.sh 4567 Debug" 
+    end
+    task :server_start_debug_ide do
+      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
+      sh "dist/bin/start.sh 4567 Debug_IDE" 
+    end
+    task :all_debug_ide => [:mysql, :watcher, :server_start_debug_ide] 
+    task :all_debug => [:mysql, :watcher, :ti_debug, :server_start_debug] 
     task :all => [:mysql, :watcher, :server_start] 
   end
   #end dev server setup
@@ -142,10 +149,15 @@
   desc "[:clean, :build]"
   task :rebuild => [:clean, :build]
 
-  ##
-  desc "run  => [:build, :verify_hosting_dependencies, dev_server:all]"
-  ##
+  desc "Start dev server (HipHop)"
   task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
+  namespace :run do
+    desc "Start dev server (PHP 5.4 with browser based debugger)"
+    task :debug => [:build, :verify_hosting_dependencies, "dev_server:all_debug"]
+
+    desc "Start dev server (PHP 5.4 with XDebug)"
+    task :debug_ide => [:build, :verify_hosting_dependencies, "dev_server:all_debug_ide"]
+  end
 
   ##
   desc "test => [:copy, :watcher]"
@@ -183,7 +195,8 @@
   #end default
 
   def task_header(title)
-    puts "\n##########################"
-    puts "#\t#{title}"
-    puts "##########################"
+    banner = "#" * (title.length + 4)
+    puts "\n#{banner}"
+    puts "# #{title} #" 
+    puts "#{banner}"
   end

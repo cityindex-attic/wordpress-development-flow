@@ -112,6 +112,7 @@ echo "node:    $(node -v)"
 
 if [ ! -f /usr/local/ti-debug/bin/dbgp ]; then
   echo "Installing ti-debug"
+  sudo apt-get install libjpeg-turbo8
   git clone https://github.com/dpb587/ti-debug /usr/local/ti-debug
   pushd /usr/local/ti-debug
   git checkout 15e99b28057fbd57342f120005226868d40fa19a --force

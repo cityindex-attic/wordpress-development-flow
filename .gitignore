@@ -35,5 +35,6 @@ nbproject
 .idea
 node_modules
 dist
+src
 .vagrant
 /*.logs

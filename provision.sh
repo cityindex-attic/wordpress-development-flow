@@ -126,12 +126,14 @@ if [ ! -f /usr/bin/wp ]; then
   chmod +x /usr/bin/wp
 fi
 
-if [ ! -f /usr/bin/stackato ]; then
-    sudo curl -k --location -o /tmp/stackato.zip http://downloads.activestate.com/stackato/client/v1.7.2/stackato-1.7.2-linux-glibc2.3-x86_64.zip 
-    sudo apt-get install unzip -y 
-    sudo unzip /tmp/stackato.zip -d /tmp
-    sudo mv /tmp/stackato-1.7.2-linux-glibc2.3-x86_64/stackato /usr/bin
-    sudo rm -rf /tmp/stackato*
+STACKATO_VERSION=1.7.2
+if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
+  echo "Installing stackato version ${STACKATO_VERSION}"
+  sudo curl -k --location -o /tmp/stackato.zip http://downloads.activestate.com/stackato/client/v${STACKATO_VERSION}/stackato-${STACKATO_VERSION}-linux-glibc2.3-x86_64.zip 
+  sudo apt-get install unzip -y 
+  sudo unzip /tmp/stackato.zip -d /tmp
+  sudo mv /tmp/stackato-${STACKATO_VERSION}-linux-glibc2.3-x86_64/stackato /usr/bin
+  sudo rm -rf /tmp/stackato*
 fi
 echo "stackato:$(stackato --version)"
 

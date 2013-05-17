@@ -7,8 +7,8 @@ env:
 mem: 256
 ignores: ["bin", "config", "logs", "public/wordpress", "public/wordpress/wp-config.php", "run", "runtimes"]
 services:
-  pressupbox-development-boilerplate_mysql: mysql
-  pressupbox-development-boilerplate_uploads: filesystem
+  ${name}_mysql: mysql
+  ${name}_uploads: filesystem
 hooks:
     post-staging:
     - rm -rf public/wp-content/uploads

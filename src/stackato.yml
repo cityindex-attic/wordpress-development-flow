@@ -7,8 +7,13 @@ env:
 mem: 256
 ignores: ["bin", "config", "logs", "public/wordpress", "public/wordpress/wp-config.php", "run", "runtimes"]
 services:
+  ${name}-cache: filesystem
   ${name}_mysql: mysql
   ${name}_uploads: filesystem
+env:
+  DATABASE_ALWAYS_REFRESH: 
+    default: false
+    inherit: y
 hooks:
     post-staging:
     - rm -rf public/wp-content/uploads

@@ -120,12 +120,6 @@ if [ ! -f /usr/local/ti-debug/bin/dbgp ]; then
 fi
 echo "ti-debug:$(/usr/local/ti-debug/bin/dbgp --version)"
 
-if [ ! -f /usr/bin/wp ]; then
-  echo "Installing wp-cli"
-  sudo curl http://wp-cli.org/packages/phar/wp-cli.phar > /usr/bin/wp
-  chmod +x /usr/bin/wp
-fi
-
 STACKATO_VERSION=1.7.2
 if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
   echo "Installing stackato version ${STACKATO_VERSION}"
@@ -142,6 +136,11 @@ if [ ! -f /usr/bin/unison ]; then
 fi
 echo "unison:  $(unison -version)"
 
+if ! grep -q "/vagrant/setenv.sh" /home/vagrant/.bashrc; then
+  echo "Adding ENV variables"
+  echo -e "\nsource /vagrant/setenv.sh \n" >> /home/vagrant/.bashrc
+fi
+
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 2 | indent
 rm -f /home/vagrant/postinstall.sh
@@ -149,6 +148,10 @@ rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
 echo "Copying host source files into place"
 rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
+
+echo "Fixing file permissions"
+sudo mkdir -p /app/app
+sudo chown -R vagrant:vagrant /app
 
 echo "Configuring build dependancies"
 bundle install | indent

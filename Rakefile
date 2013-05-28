@@ -84,14 +84,6 @@
   desc "dev server setup"
   ##
   namespace :dev_server do
-    task :mysql do
-      task_header("Setting up MySql")
-      sh "mysqladmin -uroot -psecret_password create wordpress" do |ok,res|
-        if ok
-          sh "mysql -uroot -psecret_password wordpress < tests/wordpress.sample.sql"
-        end
-      end
-    end
     task :server_start do
       task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
       sh "dist/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
@@ -108,9 +100,9 @@
       task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
       sh "dist/bin/start.sh 4567 Debug_IDE" 
     end
-    task :all_debug_ide => [:mysql, :watcher, :server_start_debug_ide] 
-    task :all_debug => [:mysql, :watcher, :ti_debug, :server_start_debug] 
-    task :all => [:mysql, :watcher, :server_start] 
+    task :all_debug_ide => [:watcher, :server_start_debug_ide] 
+    task :all_debug => [:watcher, :ti_debug, :server_start_debug] 
+    task :all => [:watcher, :server_start] 
   end
   #end dev server setup
 

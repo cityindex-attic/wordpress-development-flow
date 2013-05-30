@@ -151,11 +151,12 @@ sudo mkdir -p /app/app
 sudo chown -R vagrant:vagrant /app
 
 echo "Configuring build dependancies"
+pushd /vagrant
 bundle install | indent
+popd
 
 echo "Syncing /tmp/app_on_host to /app/app"
 nohup /vagrant/sync_app_on_host_2_app.sh > /vagrant/sync_app_on_host_2_app.log &
-
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

@@ -27,4 +27,6 @@ Listen.to("/tmp/app_on_host/", :force_polling => true, :latency => 0.5 ) do |mod
     end
 	end
 
+	$stdout.flush
+
 end

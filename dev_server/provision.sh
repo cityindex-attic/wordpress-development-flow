@@ -146,15 +146,16 @@ sudo apt-get autoremove -y | tail -n 2 | indent
 rm -f /home/vagrant/postinstall.sh
 rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
-echo "Copying host source files into place"
-rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
-
 echo "Fixing file permissions"
 sudo mkdir -p /app/app
 sudo chown -R vagrant:vagrant /app
 
 echo "Configuring build dependancies"
 bundle install | indent
+
+echo "Syncing /tmp/app_on_host to /app/app"
+nohup /vagrant/sync_app_on_host_2_app.sh > /vagrant/sync_app_on_host_2_app.log &
+
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

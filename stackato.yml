@@ -14,6 +14,6 @@ env:
     default: false
     inherit: y
 hooks:
-    post-staging:
+    pre-running:
     - rm -rf public/wp-content/uploads
     - ln -s "$STACKATO_FILESYSTEM" public/wp-content/uploads

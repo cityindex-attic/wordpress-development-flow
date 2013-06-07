@@ -2,8 +2,6 @@ name: wordpress-development-flow
 instances: 1
 framework:
   type: buildpack
-env:
-  BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
 mem: 256
 ignores: ["bin", "config", "logs", "public/wordpress", "public/wordpress/wp-config.php", "run", "runtimes"]
 services:
@@ -11,6 +9,7 @@ services:
   ${name}_mysql: mysql
   ${name}_uploads: filesystem
 env:
+  BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
   DATABASE_ALWAYS_REFRESH: 
     default: false
     inherit: y

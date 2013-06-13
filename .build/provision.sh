@@ -136,9 +136,9 @@ if [ ! -f /usr/bin/unison ]; then
 fi
 echo "unison:  $(unison -version)"
 
-if ! grep -q "/vagrant/setenv.sh" /home/vagrant/.bashrc; then
+if ! grep -q "/vagrant/.build/setenv.sh" /home/vagrant/.bashrc; then
   echo "Adding ENV variables"
-  echo -e "\nsource /vagrant/setenv.sh \n" >> /home/vagrant/.bashrc
+  echo -e "\nsource /vagrant/.build/setenv.sh \n" >> /home/vagrant/.bashrc
 fi
 
 echo "Clean up..."
@@ -155,8 +155,8 @@ pushd /vagrant
 bundle install | indent
 popd
 
-echo "Syncing /tmp/app_on_host to /app/app"
-nohup /vagrant/sync_app_on_host_2_app.sh > /vagrant/sync_app_on_host_2_app.log &
+echo "Syncing all changes from /vagrant to /app/app"
+nohup /vagrant/.build/sync_app_on_host_2_app.sh > /vagrant/.build/sync_app_on_host_2_app.log &
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

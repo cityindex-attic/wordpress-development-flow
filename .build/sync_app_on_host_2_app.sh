@@ -2,16 +2,16 @@
 require 'listen'
 require 'fileutils'
 
-puts "rsyncing /tmp/app_on_host/ -> /app/app"
-`rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /tmp/app_on_host/ /app/app/`
+puts "rsyncing /vagrant/ -> /app/app"
+`rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.build' --exclude='.DS_Store' /vagrant/ /app/app/`
 
-puts "Watching /tmp/app_on_host/ for new changes ..."
-Listen.to("/tmp/app_on_host/", :force_polling => true, :latency => 0.5 ) do |modified, added, removed|
+puts "Watching /vagrant for new changes ..."
+Listen.to("/vagrant/", :ignore => /\.build|\.git|\.vagrant/, :force_polling => true, :latency => 0.5 ) do |modified, added, removed|
 	
 	puts "Detected new files #{added.inspect}" unless added.empty?
 	puts "Detected modifications to #{modified.inspect}" unless modified.empty?
 	(modified << added).flatten.each do |src_file|
-    targetLocation = src_file.sub('/tmp/app_on_host/', '/app/app/')  
+    targetLocation = src_file.sub('/vagrant/', '/app/app/')  
 		puts "\tcopying #{src_file} to #{targetLocation}"
 
 		FileUtils.mkdir_p(File.dirname(targetLocation));  
@@ -21,7 +21,7 @@ Listen.to("/tmp/app_on_host/", :force_polling => true, :latency => 0.5 ) do |mod
   unless removed.empty? 
 		 puts "Detected deleted files #{removed.inspect}"
 		 removed.each do |removed_file|
-      targetLocation = removed_file.sub('/tmp/app_on_host/', '/app/app/')  
+      targetLocation = removed_file.sub('/vagrant/', '/app/app/')  
       puts "\tdeleting #{targetLocation}"
       FileUtils.rm(targetLocation)  
     end

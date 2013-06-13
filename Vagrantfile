@@ -8,15 +8,10 @@ Vagrant.configure("2") do |config|
   config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", "1024"]
   end
-
-  # config.sync.host_folder = "src"  #relative to the folder your Vagrantfile is in
-  # config.sync.guest_folder = "src" #relative to the vagrant home folder -> ~/
-
-  config.vm.synced_folder "../app", "/tmp/app_on_host"
   
-  config.vm.synced_folder "/Users/mrdavidlaing/Projects/mrdavidlaing/stackato-buildpack-wordpress", "/app/buildpack"
+  #config.vm.synced_folder "/Users/mrdavidlaing/Projects/mrdavidlaing/stackato-buildpack-wordpress", "/app/buildpack"
   
-  config.vm.provision :shell, :path => "provision.sh"
+  config.vm.provision :shell, :path => ".build/provision.sh"
 
 end
 

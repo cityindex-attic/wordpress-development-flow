@@ -1,5 +1,4 @@
   require 'fileutils'
-  require 'listen'
 
   ##
   desc "Git refresh buildpack"
@@ -8,12 +7,12 @@
     task_header("Refresh Buildpack")
 
     if Dir.exists?("/app/buildpack/.git")
-    #  puts "\tUpdating buildpack"
-    #  sh "git --git-dir /app/buildpack/.git reset --hard HEAD"
-    #  sh "git --git-dir /app/buildpack/.git pull"
+      puts "\tUpdating buildpack"
+      sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git reset --hard HEAD"
+      sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git pull"
     else
       puts "\tCloning buildpack"
-      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git /app/buildpack"     
+      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git #{ENV['STACKATO_APP_ROOT']}/buildpack"     
     end
   end
   #end Git refresh buildpack
@@ -26,32 +25,6 @@
     sh "#{ENV['STACKATO_APP_ROOT']}/buildpack/bin/compile #{ENV['STACKATO_DOCUMENT_ROOT']} #{ENV['STACKATO_APP_ROOT']}/.buildpack-cache"
   end
   #end compile buildpack
-
-  ##
-  desc "dev server setup"
-  ##
-  namespace :dev_server do
-    task :server_start do
-      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
-      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
-    end
-    task :ti_debug do
-      task_header("Starting browser based debug server (ti-debug)")
-      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
-    end
-    task :server_start_debug do
-      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
-      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug" 
-    end
-    task :server_start_debug_ide do
-      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
-      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug_IDE" 
-    end
-    task :all_debug_ide => [:server_start_debug_ide] 
-    task :all_debug => [:ti_debug, :server_start_debug] 
-    task :all => [:server_start] 
-  end
-  #end dev server setup
 
   ##
   desc "stackato release"
@@ -88,6 +61,28 @@
   desc "[:build]"
   task :rebuild => [:build]
 
+  namespace :dev_server do
+    task :server_start do
+      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
+      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
+    end
+    task :ti_debug do
+      task_header("Starting browser based debug server (ti-debug)")
+      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
+    end
+    task :server_start_debug do
+      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
+      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug" 
+    end
+    task :server_start_debug_ide do
+      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
+      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug_IDE" 
+    end
+    task :all_debug_ide => [:server_start_debug_ide] 
+    task :all_debug => [:ti_debug, :server_start_debug] 
+    task :all => [:server_start] 
+  end
+ 
   desc "Start dev server (HipHop)"
   task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
   namespace :run do

@@ -3,7 +3,7 @@ instances: 1
 framework:
   type: buildpack
 mem: 256
-ignores: ["bin", "config", "logs", "public/wordpress", "public/wordpress/wp-config.php", "run", "runtimes"]
+ignores: [".build", ".git*", ".vagrant", "bin", "config", "logs","public/wp-*.php", "public/wp-includes", "public/wp-admin", "run", "runtimes"]
 services:
   ${name}-cache: filesystem
   ${name}_mysql: mysql

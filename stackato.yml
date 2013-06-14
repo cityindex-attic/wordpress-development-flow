@@ -2,19 +2,20 @@ name: wordpress-development-flow
 instances: 1
 framework:
   type: buildpack
-env:
-  BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
 mem: 256
-ignores: ["bin", "config", "logs", "public/wordpress", "public/wordpress/wp-config.php", "run", "runtimes"]
+ignores: [".build", ".git*", ".vagrant", "bin", "config", "logs","public/wp-*.php", "public/wp-includes", "public/wp-admin", "run", "runtimes"]
 services:
   ${name}-cache: filesystem
   ${name}_mysql: mysql
   ${name}_uploads: filesystem
 env:
+  BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
+  BUILDPACK_CONFIG_TYPE: "SINGLESITE"
+  DATABASE_SQL_DUMP: "/app/app/db/wordpress.master.sql"
   DATABASE_ALWAYS_REFRESH: 
     default: false
     inherit: y
 hooks:
-    post-staging:
+    pre-running:
     - rm -rf public/wp-content/uploads
     - ln -s "$STACKATO_FILESYSTEM" public/wp-content/uploads

@@ -1,58 +1,4 @@
   require 'fileutils'
-  require 'listen'
-
-  ##
-  desc "delete created assets"
-  ##
-  task :clean do
-    puts "Deleting dist/"
-    sh 'rm -rf dist/'
-  end
-
-  ##
-  desc "copy files and directories"
-  ##
-  task :copy do
-    task_header("Copy")
-
-    files = FileList.new("src/**/*").exclude(/\.less$/i)
-    files.each do |src_file|
-      copy_src_file_to_dist src_file
-    end
-  end
-  #end copy files and directories
-
-  def copy_src_file_to_dist(src_file)
-    targetLocation = src_file.sub('src/', 'dist/')  
-    puts "\tcopying #{src_file} to #{targetLocation}"
-    
-    FileUtils.mkdir_p(File.dirname(targetLocation));  
-    FileUtils.cp(src_file, targetLocation) unless File.directory?(src_file)
-  end
-
-  watcher_changes_callback = Proc.new do |modified_list, added_list, removed_list|
-    puts "watcher triggered"
-    (modified_list << added_list).flatten.each do |file|
-      copy_src_file_to_dist file
-    end
-    removed_list.each do |removed|
-      targetLocation = removed.sub('src/', 'dist/')  
-      puts "\tdeleting #{targetLocation}"
-      FileUtils.rm(targetLocation)  
-    end
-  end
-
-  ##
-  desc "Watch files"
-  ##
-  task :watcher do
-    task_header("Watch files")
-    listener = Listen.to('src')
-    listener.change(&watcher_changes_callback)
-    listener.start(false) # non-blocking execution
-    puts "Started watcher on src/"
-  end
-  #end watch files
 
   ##
   desc "Git refresh buildpack"
@@ -60,51 +6,25 @@
   task :refresh_buildpack do
     task_header("Refresh Buildpack")
 
-    if Dir.exists?("./buildpack/.git")
+    if Dir.exists?("/app/buildpack/.git")
       puts "\tUpdating buildpack"
-      sh "git --git-dir ./buildpack/.git reset --hard HEAD"
-      sh "git --git-dir ./buildpack/.git pull"
+      sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git reset --hard HEAD"
+      sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git pull"
     else
       puts "\tCloning buildpack"
-      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git ./buildpack"     
+      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git #{ENV['STACKATO_APP_ROOT']}/buildpack"     
     end
   end
   #end Git refresh buildpack
-
+ 
   ##
   desc "compile buildpack"
   ##
   task :compile_buildpack do
     task_header("Compile")
-    sh "./buildpack/bin/compile ./dist ./.buildpack-cache"
+    sh "#{ENV['STACKATO_APP_ROOT']}/buildpack/bin/compile #{ENV['STACKATO_DOCUMENT_ROOT']} #{ENV['STACKATO_APP_ROOT']}/.buildpack-cache"
   end
   #end compile buildpack
-
-  ##
-  desc "dev server setup"
-  ##
-  namespace :dev_server do
-    task :server_start do
-      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
-      sh "dist/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
-    end
-    task :ti_debug do
-      task_header("Starting browser based debug server (ti-debug)")
-      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
-    end
-    task :server_start_debug do
-      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
-      sh "dist/bin/start.sh 4567 Debug" 
-    end
-    task :server_start_debug_ide do
-      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
-      sh "dist/bin/start.sh 4567 Debug_IDE" 
-    end
-    task :all_debug_ide => [:watcher, :server_start_debug_ide] 
-    task :all_debug => [:watcher, :ti_debug, :server_start_debug] 
-    task :all => [:watcher, :server_start] 
-  end
-  #end dev server setup
 
   ##
   desc "stackato release"
@@ -112,12 +32,12 @@
   task :release, :deployName, :username, :password do |t, args|
     task_header("Release")
     stackatoBaseUri = "apps.labs.cityindex.com"
-    puts "deploying to url: http://#{args[:deployName]}.#{args[:stackatoBaseUri]}"
+    puts "deploying to url: http://#{args[:deployName]}.#{stackatoBaseUri}"
     sh "stackato target https://api.#{stackatoBaseUri}"
     sh "stackato login #{args[:username]} --pass #{args[:password]}"
-    sh "stackato push #{args[:deployName]} --no-prompt --path ./dist" do |ok,res|
+    sh "stackato push #{args[:deployName]} --no-prompt" do |ok,res|
       if ! ok
-        sh "stackato update #{args[:deployName]} --no-prompt --path ./dist"
+        sh "stackato update #{args[:deployName]} --no-prompt"
       end
     end
   end
@@ -136,11 +56,33 @@
   end
   #end verify hosting dependencies
 
-  desc "[:copy, :refresh_buildpack, :compile_buildpack]"
-  task :build => [:copy, :refresh_buildpack, :compile_buildpack]
-  desc "[:clean, :build]"
-  task :rebuild => [:clean, :build]
+  desc "[:refresh_buildpack, :compile_buildpack]"
+  task :build => [:refresh_buildpack, :compile_buildpack]
+  desc "[:build]"
+  task :rebuild => [:build]
 
+  namespace :dev_server do
+    task :server_start do
+      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
+      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
+    end
+    task :ti_debug do
+      task_header("Starting browser based debug server (ti-debug)")
+      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
+    end
+    task :server_start_debug do
+      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
+      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug" 
+    end
+    task :server_start_debug_ide do
+      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
+      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug_IDE" 
+    end
+    task :all_debug_ide => [:server_start_debug_ide] 
+    task :all_debug => [:ti_debug, :server_start_debug] 
+    task :all => [:server_start] 
+  end
+ 
   desc "Start dev server (HipHop)"
   task :run => [:build, :verify_hosting_dependencies, "dev_server:all"]
   namespace :run do
@@ -151,17 +93,12 @@
     task :debug_ide => [:build, :verify_hosting_dependencies, "dev_server:all_debug_ide"]
   end
 
-  ##
-  desc "test => [:copy, :watcher]"
-  ##
-  task :test => [:copy, :watcher]
-
   ##                                                                                            
   desc "Generating wordpress documentation"                                                     
   ##                                                                                            
   task :docs, :type, :name do |t, args|                                                         
-    source = "/home/vagrant/dist/public/wp-content/#{args.type}/#{args.name}"                   
-    target = "/home/vagrant/dist/public/docs/#{args.type}/#{args.name}"                         
+    source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"                   
+    target = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/docs/#{args.type}/#{args.name}"                         
     puts "Generating docs..."                                                                   
     puts "Source: #{source}"                                                                    
     puts "Target: #{target}"                                                                    

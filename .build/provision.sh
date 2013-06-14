@@ -136,9 +136,9 @@ if [ ! -f /usr/bin/unison ]; then
 fi
 echo "unison:  $(unison -version)"
 
-if ! grep -q "/vagrant/setenv.sh" /home/vagrant/.bashrc; then
+if ! grep -q "/vagrant/.build/setenv.sh" /home/vagrant/.bashrc; then
   echo "Adding ENV variables"
-  echo -e "\nsource /vagrant/setenv.sh \n" >> /home/vagrant/.bashrc
+  echo -e "\nsource /vagrant/.build/setenv.sh \n" >> /home/vagrant/.bashrc
 fi
 
 echo "Clean up..."
@@ -146,15 +146,17 @@ sudo apt-get autoremove -y | tail -n 2 | indent
 rm -f /home/vagrant/postinstall.sh
 rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
-echo "Copying host source files into place"
-rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /home/vagrant/
-
 echo "Fixing file permissions"
 sudo mkdir -p /app/app
 sudo chown -R vagrant:vagrant /app
 
 echo "Configuring build dependancies"
+pushd /vagrant
 bundle install | indent
+popd
+
+echo "Syncing all changes from /vagrant to /app/app"
+nohup /vagrant/.build/sync_app_on_host_2_app.sh > /vagrant/.build/sync_app_on_host_2_app.log &
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

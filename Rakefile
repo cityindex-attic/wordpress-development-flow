@@ -35,9 +35,9 @@
     puts "deploying to url: http://#{args[:deployName]}.#{stackatoBaseUri}"
     sh "stackato target https://api.#{stackatoBaseUri}"
     sh "stackato login #{args[:username]} --pass #{args[:password]}"
-    sh "stackato push #{args[:deployName]} --no-prompt --path #{ENV['STACKATO_DOCUMENT_ROOT']}" do |ok,res|
+    sh "stackato push #{args[:deployName]} --no-prompt" do |ok,res|
       if ! ok
-        sh "stackato update #{args[:deployName]} --no-prompt --path #{ENV['STACKATO_DOCUMENT_ROOT']}"
+        sh "stackato update #{args[:deployName]} --no-prompt"
       end
     end
   end

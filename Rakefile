@@ -120,6 +120,7 @@
   desc "Metrics"
   ##
   namespace :metrics do
+
     task :phploc, :type, :name do |t, args|
       source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
       target_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
@@ -127,6 +128,19 @@
       sh "mkdir -p #{target_dir}"
       sh "phploc --log-csv #{log} #{source}"
     end
+
+    task :pdepend, :type, :name do |t, args|
+      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
+      logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
+      svg_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/#{args.name}"
+      jdepend_xml = "#{logs_dir}/jdepend.xml"
+      jdepend_chart = "#{svg_dir}/dependencies.svg"
+      overview_pyr = "#{svg_dir}/overview-pyramid.svg"
+      sh "mkdir -p #{logs_dir}"
+      sh "mkdir -p #{svg_dir}"
+      sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{source}"
+    end
+
   end
                                                       
   ##                                                                                           

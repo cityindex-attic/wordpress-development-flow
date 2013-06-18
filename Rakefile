@@ -141,6 +141,14 @@
       sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{source}"
     end
 
+    task :phpmd, :type, :name do |t, args|
+      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
+      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
+      sh "mkdir -p #{log}"
+      sh "phpmd #{source} xml design --reportfile #{log}/phpmd.xml"
+      sh "phpmd #{source} xml #{log}/phpmd.xml --reportfile #{log}/pmd.xml"
+    end
+
   end
                                                       
   ##                                                                                           

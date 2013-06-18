@@ -155,6 +155,12 @@
       sh "phpcs --report=checkstyle --report-file=#{log}/checkstyle.xml --standard=WordPress -vvv -l -n #{source} > /dev/null || true"
     end
 
+    task :phpcpd, :type, :name do |t, args|
+      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
+      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
+      sh "phpcpd --log-pmd #{log}/pmd-cpd.xml #{source}"
+    end
+
   end
                                                       
   ##                                                                                           

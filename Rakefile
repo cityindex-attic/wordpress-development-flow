@@ -161,6 +161,13 @@
       sh "phpcpd --log-pmd #{log}/pmd-cpd.xml #{source}"
     end
 
+    task :phpunit, :type, :name do |t, args|
+      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
+      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
+      html_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/#{args.name}"
+      sh "phpunit --coverage-clover #{log}/clover.xml --coverage-html #{html_dir} #{source}"
+    end
+
   end
                                                       
   ##                                                                                           

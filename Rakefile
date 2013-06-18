@@ -115,6 +115,19 @@
                                                                                                 
     sh "phpdoc -t #{target} #{source_switch}"                                                   
   end   
+
+  ##
+  desc "Metrics"
+  ##
+  namespace :metrics do
+    task :phploc, :type, :name do |t, args|
+      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
+      target_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
+      log = "#{target_dir}/phploc.csv"
+      sh "mkdir -p #{target_dir}"
+      sh "phploc --log-csv #{log} #{source}"
+    end
+  end
                                                       
   ##                                                                                           
   task :default => [:run] do

@@ -165,11 +165,23 @@
       source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
       log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
       html_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/#{args.name}"
-      sh "phpunit --coverage-clover #{log}/clover.xml --coverage-html #{html_dir} #{source}"
+      sh "phpunit --coverage-clover #{log}/clover.xml --coverage-html #{html_dir} #{source} || true"
     end
 
   end
-                                                      
+
+  ##
+  desc "Metrics: phploc, pdepend, phpmd, phpcs, phpcpd, phpunit"
+  ##
+  task :metrics, :type, :name do |t, args|
+    Rake::Task["metrics:phploc"].invoke( args.type, args.name )
+    Rake::Task["metrics:pdepend"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpmd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcs"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcpd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpunit"].invoke( args.type, args.name )
+  end
+
   ##                                                                                           
   task :default => [:run] do
     puts "Ready for the day!"

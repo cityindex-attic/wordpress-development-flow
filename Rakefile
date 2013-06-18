@@ -120,7 +120,7 @@
   desc "Metrics"
   ##
   namespace :metrics do
-
+    
     task :phploc, :type, :name do |t, args|
       source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
       target_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"

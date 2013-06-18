@@ -120,52 +120,46 @@
   desc "Metrics"
   ##
   namespace :metrics do
-    
-    task :phploc, :type, :name do |t, args|
-      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
-      target_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
-      log = "#{target_dir}/phploc.csv"
-      sh "mkdir -p #{target_dir}"
-      sh "phploc --log-csv #{log} #{source}"
+
+    name = "#{ENV['name']}"
+    type = "#{ENV['type']}"
+    logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/logs/#{name}"
+    files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}"
+    source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
+
+    unless Dir.exists?(logs_dir)
+      sh "mkdir -p #{logs_dir}"
+    end
+    unless Dir.exists?(files_dir)
+      sh "mkdir -p #{files_dir}"
     end
 
-    task :pdepend, :type, :name do |t, args|
-      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
-      logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
-      svg_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/#{args.name}"
+    task :phploc do
+      sh "phploc --log-csv #{logs_dir}/phploc.csv #{source}"
+    end
+
+    task :pdepend do
       jdepend_xml = "#{logs_dir}/jdepend.xml"
-      jdepend_chart = "#{svg_dir}/dependencies.svg"
-      overview_pyr = "#{svg_dir}/overview-pyramid.svg"
-      sh "mkdir -p #{logs_dir}"
-      sh "mkdir -p #{svg_dir}"
+      jdepend_chart = "#{files_dir}/dependencies.svg"
+      overview_pyr = "#{files_dir}/overview-pyramid.svg"
       sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{source}"
     end
 
-    task :phpmd, :type, :name do |t, args|
-      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
-      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
-      sh "mkdir -p #{log}"
-      sh "phpmd #{source} xml design --reportfile #{log}/phpmd.xml"
-      sh "phpmd #{source} xml #{log}/phpmd.xml --reportfile #{log}/pmd.xml"
+    task :phpmd do
+      sh "phpmd #{source} xml design --reportfile #{logs_dir}/phpmd.xml"
+      sh "phpmd #{source} xml #{logs_dir}/phpmd.xml --reportfile #{logs_dir}/pmd.xml"
     end
 
-    task :phpcs, :type, :name do |t, args|
-      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
-      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
-      sh "phpcs --report=checkstyle --report-file=#{log}/checkstyle.xml --standard=WordPress -vvv -l -n #{source} > /dev/null || true"
+    task :phpcs do
+      sh "phpcs --report=checkstyle --report-file=#{logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{source} > /dev/null || true"
     end
 
-    task :phpcpd, :type, :name do |t, args|
-      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
-      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
-      sh "phpcpd --log-pmd #{log}/pmd-cpd.xml #{source}"
+    task :phpcpd do
+      sh "phpcpd --log-pmd #{logs_dir}/pmd-cpd.xml #{source}"
     end
 
-    task :phpunit, :type, :name do |t, args|
-      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"
-      log = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/logs/#{args.name}"
-      html_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{args.type}/#{args.name}"
-      sh "phpunit --coverage-clover #{log}/clover.xml --coverage-html #{html_dir} #{source} || true"
+    task :phpunit do
+      sh "phpunit --coverage-clover #{logs_dir}/clover.xml --coverage-html #{files_dir} #{source} || true"
     end
 
   end
@@ -173,13 +167,14 @@
   ##
   desc "Metrics: phploc, pdepend, phpmd, phpcs, phpcpd, phpunit"
   ##
-  task :metrics, :type, :name do |t, args|
-    Rake::Task["metrics:phploc"].invoke( args.type, args.name )
-    Rake::Task["metrics:pdepend"].invoke( args.type, args.name )
-    Rake::Task["metrics:phpmd"].invoke( args.type, args.name )
-    Rake::Task["metrics:phpcs"].invoke( args.type, args.name )
-    Rake::Task["metrics:phpcpd"].invoke( args.type, args.name )
-    Rake::Task["metrics:phpunit"].invoke( args.type, args.name )
+  task :metrics do
+
+    Rake::Task["metrics:phploc"].invoke
+    Rake::Task["metrics:pdepend"].invoke
+    Rake::Task["metrics:phpmd"].invoke
+    Rake::Task["metrics:phpcs"].invoke
+    Rake::Task["metrics:phpcpd"].invoke
+    Rake::Task["metrics:phpunit"].invoke
   end
 
   ##                                                                                           

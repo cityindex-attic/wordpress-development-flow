@@ -103,6 +103,49 @@ echo "phpdoc:  $(phpdoc --version)"
 
 if [[ ! -f /usr/bin/phploc ]]; then
   echo "Installing phploc"
+  sudo pear config-set auto_discover 1
+  sudo pear install pear.phpunit.de/phploc
+  phploc --version
+fi
+
+if [[ ! -f /usr/bin/pdepend ]]; then
+  echo "Installing pdepend"
+  sudo pear config-set auto_discover 1
+  sudo pear channel-discover pear.pdepend.org
+  sudo pear install pdepend/PHP_Depend
+  pdepend --version
+fi
+
+if [[ ! -f /usr/bin/phpmd ]]; then
+  echo "Installing phpmd"
+  sudo pear config-set auto_discover 1
+  sudo pear channel-discover pear.phpmd.org
+  sudo pear channel-discover pear.pdepend.org
+  sudo pear install --alldeps phpmd/PHP_PMD
+  phpmd --version
+fi
+
+if [[ ! -f /usr/bin/phpcs ]]; then
+  echo "Installing phpcs"
+  sudo pear config-set auto_discover 1
+  sudo pear install PHP_CodeSniffer-1.4.5
+  phpcs --version
+fi
+
+if [[ ! -f /usr/bin/phpunit ]]; then
+  echo "Installing phpunit"
+  sudo pear config-set auto_discover 1
+  sudo pear channel-discover nikic.github.com/pear
+  sudo pear install channel://nikic.github.com/pear/PHPParser-0.9.2
+  sudo pear install pear.phpunit.de/DbUnit
+  phpunit --version
+fi
+
+if [[ ! -f /usr/bin/phpcpd ]]; then
+  echo "Installing phpcpd"
+  sudo pear config-set auto_discover 1
+  sudo pear install pear.phpunit.de/phpcpd
+  phpcpd --version
 fi
 
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then

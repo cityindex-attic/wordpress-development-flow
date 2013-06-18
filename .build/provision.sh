@@ -148,6 +148,14 @@ if [[ ! -f /usr/bin/phpcpd ]]; then
   phpcpd --version
 fi
 
+if [[ ! -f /usr/bin/phpdox ]]; then
+  echo "Installing phpdox"
+  sudo wget -P /opt http://phpdox.de/phpdox-0.5.phar
+  sudo chown -R vagrant:vagrant /opt/phpdox-0.5.phar
+  sudo chmod 775 /opt/phpdox-0.5.phar
+  ln -s /opt/phpdox-0.5.phar /usr/bin/phpdox
+fi
+
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
   sudo apt-get install python-software-properties -y

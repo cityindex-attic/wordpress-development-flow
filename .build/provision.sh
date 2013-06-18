@@ -101,6 +101,10 @@ if [[ ! -f /usr/bin/phpdoc ]]; then
 fi
 echo "phpdoc:  $(phpdoc --version)"
 
+if [[ ! -f /usr/bin/phploc ]]; then
+  echo "Installing phploc"
+fi
+
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
   sudo apt-get install python-software-properties -y

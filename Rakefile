@@ -127,38 +127,40 @@
     files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}"
     source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
 
-    unless Dir.exists?(logs_dir)
-      sh "mkdir -p #{logs_dir}"
-    end
-    unless Dir.exists?(files_dir)
-      sh "mkdir -p #{files_dir}"
+    task :init do
+      unless Dir.exists?(logs_dir)
+        sh "mkdir -p #{logs_dir}"
+      end
+      unless Dir.exists?(files_dir)
+        sh "mkdir -p #{files_dir}"
+      end
     end
 
-    task :phploc do
+    task :phploc => [:init] do
       sh "phploc --log-csv #{logs_dir}/phploc.csv #{source}"
     end
 
-    task :pdepend do
+    task :pdepend => [:init] do
       jdepend_xml = "#{logs_dir}/jdepend.xml"
       jdepend_chart = "#{files_dir}/dependencies.svg"
       overview_pyr = "#{files_dir}/overview-pyramid.svg"
       sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{source}"
     end
 
-    task :phpmd do
+    task :phpmd => [:init] do
       sh "phpmd #{source} xml design --reportfile #{logs_dir}/phpmd.xml"
       sh "phpmd #{source} xml #{logs_dir}/phpmd.xml --reportfile #{logs_dir}/pmd.xml"
     end
 
-    task :phpcs do
+    task :phpcs => [:init] do
       sh "phpcs --report=checkstyle --report-file=#{logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{source} > /dev/null || true"
     end
 
-    task :phpcpd do
+    task :phpcpd => [:init] do
       sh "phpcpd --log-pmd #{logs_dir}/pmd-cpd.xml #{source}"
     end
 
-    task :phpunit do
+    task :phpunit => [:init] do
       sh "phpunit --coverage-clover #{logs_dir}/clover.xml --coverage-html #{files_dir} #{source} || true"
     end
 
@@ -168,7 +170,6 @@
   desc "Metrics: phploc, pdepend, phpmd, phpcs, phpcpd, phpunit"
   ##
   task :metrics do
-
     Rake::Task["metrics:phploc"].invoke
     Rake::Task["metrics:pdepend"].invoke
     Rake::Task["metrics:phpmd"].invoke

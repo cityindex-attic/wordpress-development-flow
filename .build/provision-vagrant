@@ -1,8 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+export BUILD_FOLDER='/vagrant/.build'
+echo "=-=-=-=ENV=-=-=-=-=-="
+export
+echo "=-=-=-=-=-=-=-=-=-=-=-="
 
-function indent() {
-  sed -u "s/^/       /"
-}
+source ${BUILD_FOLDER}/common/helper-functions
+
+echo "Installing common components"
+${BUILD_FOLDER}/provision-common
 
 DEFAULT_LOCALE="en_US.UTF-8"
 if [[ ! "$(locale)" =~ "$DEFAULT_LOCALE" ]]; then
@@ -22,12 +27,6 @@ if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
   fi
 EOH
 fi
-
-if [ ! -f /usr/bin/curl ]; then
-  echo "Installing curl"
-  sudo apt-get install curl -y
-fi
-echo "curl:    $(curl --version)" | head -n 1
 
 if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "Upgrading VBoxGuestAdditions"
@@ -83,80 +82,6 @@ if [ ! -f /usr/bin/git ]; then
 fi
 echo "git:     $(git --version)"
 
-if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
-  echo "Installing PHP5"
-  sudo apt-get install python-software-properties -y
-  sudo add-apt-repository ppa:ondrej/php5 -y
-  sudo apt-get update
-  sudo apt-get install php5 php5-mysql -y
-fi
-echo "php:     $(php -v)" | head -n 1
-
-if [[ ! -f /usr/bin/phpdoc ]]; then
-  echo "Installing phpDocumentator2"
-  sudo apt-get -y update
-  sudo apt-get -y install php5-xsl graphviz php-pear 2>/dev/null
-  sudo pear channel-discover pear.phpdoc.org
-  sudo pear install phpdoc/phpDocumentor-alpha
-fi
-echo "phpdoc:  $(phpdoc --version)"
-
-if [[ ! -f /usr/bin/phploc ]]; then
-  echo "Installing phploc"
-  sudo pear config-set auto_discover 1
-  sudo pear install pear.phpunit.de/phploc
-  phploc --version
-fi
-
-if [[ ! -f /usr/bin/pdepend ]]; then
-  echo "Installing pdepend"
-  sudo pear config-set auto_discover 1
-  sudo pear channel-discover pear.pdepend.org
-  sudo pear install pdepend/PHP_Depend
-  pdepend --version
-fi
-
-if [[ ! -f /usr/bin/phpmd ]]; then
-  echo "Installing phpmd"
-  sudo pear config-set auto_discover 1
-  sudo pear channel-discover pear.phpmd.org
-  sudo pear channel-discover pear.pdepend.org
-  sudo pear install --alldeps phpmd/PHP_PMD
-  phpmd --version
-fi
-
-if [[ ! -f /usr/bin/phpcs ]]; then
-  echo "Installing phpcs"
-  sudo pear config-set auto_discover 1
-  sudo pear install PHP_CodeSniffer-1.4.5
-  sudo git clone git://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git $(pear config-get php_dir)/PHP/CodeSniffer/Standards/WordPress
-  phpcs --version
-fi
-
-if [[ ! -f /usr/bin/phpunit ]]; then
-  echo "Installing phpunit"
-  sudo pear config-set auto_discover 1
-  sudo pear channel-discover nikic.github.com/pear
-  sudo pear install channel://nikic.github.com/pear/PHPParser-0.9.2
-  sudo pear install pear.phpunit.de/DbUnit
-  phpunit --version
-fi
-
-if [[ ! -f /usr/bin/phpcpd ]]; then
-  echo "Installing phpcpd"
-  sudo pear config-set auto_discover 1
-  sudo pear install pear.phpunit.de/phpcpd
-  phpcpd --version
-fi
-
-if [[ ! -f /usr/bin/phpdox ]]; then
-  echo "Installing phpdox"
-  sudo wget -P /opt http://phpdox.de/phpdox-0.5.phar
-  sudo chown -R vagrant:vagrant /opt/phpdox-0.5.phar
-  sudo chmod 775 /opt/phpdox-0.5.phar
-  ln -s /opt/phpdox-0.5.phar /usr/bin/phpdox
-fi
-
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
   sudo apt-get install python-software-properties -y
@@ -186,11 +111,6 @@ if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
   sudo rm -rf /tmp/stackato*
 fi
 echo "stackato:$(stackato --version)"
-
-if [ ! -f /usr/bin/unison ]; then
-  sudo apt-get install unison -y
-fi
-echo "unison:  $(unison -version)"
 
 if ! grep -q "/vagrant/.build/setenv.sh" /home/vagrant/.bashrc; then
   echo "Adding ENV variables"

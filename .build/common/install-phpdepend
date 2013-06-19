@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /usr/bin/pdepend ]]; then
+  echo "Installing pdepend"
+  sudo pear config-set auto_discover 1
+  sudo pear channel-discover pear.pdepend.org
+  sudo pear install pdepend/PHP_Depend
+  pdepend --version
+fi

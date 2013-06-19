@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+export BUILD_FOLDER='/app/app/.build'
+echo "=-=-=-=ENV=-=-=-=-=-="
+export
+echo "=-=-=-=-=-=-=-=-=-=-=-="
+
+echo "Installing common components"
+${BUILD_FOLDER}/provision-common
+
+echo "linking public/wp-content/uploads to ${STACKATO_FILESYSTEM}"
+rm -rf ${STACKATO_DOCUMENT_ROOT}/public/wp-content/uploads
+ln -s ${STACKATO_FILESYSTEM} ${STACKATO_DOCUMENT_ROOT}/public/wp-content/uploads

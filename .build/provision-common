@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+source ${BUILD_FOLDER}/common/helper-functions
+
+${BUILD_FOLDER}/common/install-curl
+${BUILD_FOLDER}/common/install-php54
+${BUILD_FOLDER}/common/install-phpdoc
+${BUILD_FOLDER}/common/install-phploc
+${BUILD_FOLDER}/common/install-phpdepend
+${BUILD_FOLDER}/common/install-phpmd
+${BUILD_FOLDER}/common/install-phpcs
+${BUILD_FOLDER}/common/install-phpunit
+${BUILD_FOLDER}/common/install-phpcpd
+${BUILD_FOLDER}/common/install-phpdox

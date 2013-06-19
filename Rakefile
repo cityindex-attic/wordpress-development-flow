@@ -31,15 +31,7 @@
   ##
   task :release, :deployName, :username, :password do |t, args|
     task_header("Release")
-    stackatoBaseUri = "apps.labs.cityindex.com"
-    puts "deploying to url: http://#{args[:deployName]}.#{stackatoBaseUri}"
-    sh "stackato target https://api.#{stackatoBaseUri}"
-    sh "stackato login #{args[:username]} --pass #{args[:password]}"
-    sh "stackato push #{args[:deployName]} --no-prompt" do |ok,res|
-      if ! ok
-        sh "stackato update #{args[:deployName]} --no-prompt"
-      end
-    end
+    sh "./build/release-to-stackato #{args[:deployname]} #{args[:username]} #{args[:password]}"
   end
   #end stackato release
 

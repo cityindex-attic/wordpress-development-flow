@@ -1,0 +1,3 @@
+function indent() {
+  sed -u "s/^/       /"
+}

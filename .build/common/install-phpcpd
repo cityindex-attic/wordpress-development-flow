@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /usr/bin/phpcpd ]]; then
+  echo "Installing phpcpd"
+  sudo pear config-set auto_discover 1
+  sudo pear install pear.phpunit.de/phpcpd
+  phpcpd --version
+fi

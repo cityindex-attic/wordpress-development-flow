@@ -3,7 +3,7 @@ require 'listen'
 require 'fileutils'
 
 puts "rsyncing /vagrant/ -> /app/app"
-`rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.build' --exclude='.DS_Store' /vagrant/ /app/app/`
+`rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /app/app/`
 
 puts "Watching /vagrant for new changes ..."
 Listen.to("/vagrant/", :ignore => /\.build|\.git|\.vagrant/, :force_polling => true, :latency => 0.5 ) do |modified, added, removed|

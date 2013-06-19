@@ -3,7 +3,7 @@ instances: 1
 framework:
   type: buildpack
 mem: 256
-ignores: [".build", ".git*", ".vagrant", "bin", "config", "logs","public/wp-*.php", "public/wp-includes", "public/wp-admin", "run", "runtimes"]
+ignores: [".git*", ".vagrant", "bin", "config", "logs","public/wp-*.php", "public/wp-includes", "public/wp-admin", "run", "runtimes"]
 services:
   ${name}-cache: filesystem
   ${name}_mysql: mysql
@@ -16,6 +16,4 @@ env:
     default: false
     inherit: y
 hooks:
-    pre-running:
-    - rm -rf public/wp-content/uploads
-    - ln -s "$STACKATO_FILESYSTEM" public/wp-content/uploads
+    pre-running: ".build/provision-stackato.sh"

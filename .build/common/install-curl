@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [ ! -f /usr/bin/curl ]; then
+  echo "Installing curl"
+  sudo apt-get install curl -y
+fi
+echo "curl:    $(curl --version)" | head -n 1

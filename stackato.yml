@@ -15,5 +15,5 @@ env:
   DATABASE_ALWAYS_REFRESH: 
     default: false
     inherit: y
-hooks:
-    pre-running: "/app/app/.build/provision-stackato"
+#hooks:
+#    pre-running: "/app/app/.build/provision-stackato"

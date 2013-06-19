@@ -113,12 +113,12 @@
   ##
   namespace :metrics do
 
-    def metrics_init(task)
-      puts "task: #{task}"
-      type = task.to_s.split(':')[1]
+    def metrics_init(type, name)
+      puts "type: #{type}"
+      puts "name: #{name}"
       $logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/logs/#{type}"
       $files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}"
-      $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/plugins"
+      $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
 
       unless Dir.exists?($logs_dir)
         sh "mkdir -p #{$logs_dir}"
@@ -128,37 +128,37 @@
       end
     end
 
-    task :phploc do |task|
-      metrics_init task
+    task :phploc, :type, :name do |task, args|
+      metrics_init args.type, args.name
       sh "phploc --log-csv #{$logs_dir}/phploc.csv #{$source}"
     end
 
-    task :pdepend do |task|
-      metrics_init task
+    task :pdepend, :type, :name do |task, args|
+      metrics_init args.type, args.name
       jdepend_xml = "#{$logs_dir}/jdepend.xml"
       jdepend_chart = "#{$files_dir}/dependencies.svg"
       overview_pyr = "#{$files_dir}/overview-pyramid.svg"
       sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{$source}"
     end
 
-    task :phpmd do |task|
-      metrics_init task
+    task :phpmd, :type, :name do |task, args|
+      metrics_init args.type, args.name
       sh "phpmd #{$source} xml design --reportfile #{$logs_dir}/phpmd.xml"
       sh "phpmd #{$source} xml #{$logs_dir}/phpmd.xml --reportfile #{$logs_dir}/pmd.xml"
     end
 
-    task :phpcs do |task|
-      metrics_init task
+    task :phpcs, :type, :name do |task, args|
+      metrics_init args.type, args.name
       sh "phpcs --report=checkstyle --report-file=#{$logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{$source} > /dev/null || true"
     end
 
-    task :phpcpd do |task|
-      metrics_init task
+    task :phpcpd, :type, :name do |task, args|
+      metrics_init args.type, args.name
       sh "phpcpd --log-pmd #{$logs_dir}/pmd-cpd.xml #{$source}"
     end
 
-    task :phpunit do |task|
-      metrics_init task
+    task :phpunit, :type, :name do |task, args|
+      metrics_init args.type, args.name
       sh "phpunit --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} #{$source} || true"
     end
 
@@ -167,13 +167,13 @@
   ##
   desc "Metrics: phploc, pdepend, phpmd, phpcs, phpcpd, phpunit"
   ##
-  task :metrics do
-    Rake::Task["metrics:phploc"].invoke
-    Rake::Task["metrics:pdepend"].invoke
-    Rake::Task["metrics:phpmd"].invoke
-    Rake::Task["metrics:phpcs"].invoke
-    Rake::Task["metrics:phpcpd"].invoke
-    Rake::Task["metrics:phpunit"].invoke
+  task :metrics, :type, :name do |t, args|
+    Rake::Task["metrics:phploc"].invoke( args.type, args.name )
+    Rake::Task["metrics:pdepend"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpmd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcs"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcpd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpunit"].invoke( args.type, args.name )
   end
 
   ##                                                                                           

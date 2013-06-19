@@ -16,4 +16,4 @@ env:
     default: false
     inherit: y
 hooks:
-    pre-running: ".build/provision-stackato.sh"
+    pre-running: "/app/app/.build/provision-stackato"

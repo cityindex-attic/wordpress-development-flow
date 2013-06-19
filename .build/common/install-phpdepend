@@ -5,5 +5,5 @@ if [[ ! -f /usr/bin/pdepend ]]; then
   sudo pear config-set auto_discover 1
   sudo pear channel-discover pear.pdepend.org
   sudo pear install pdepend/PHP_Depend
-  pdepend --version
 fi
+echo "pdepend:  $(pdepend --version)"

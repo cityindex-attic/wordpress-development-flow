@@ -113,47 +113,53 @@
   ##
   namespace :metrics do
 
-    name = "#{ENV['name']}"
-    type = "#{ENV['type']}"
-    logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/logs/#{name}"
-    files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}"
-    source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
+    def metrics_init(task)
+      puts "task: #{task}"
+      type = task.to_s.split(':')[1]
+      $logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/logs/#{type}"
+      $files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}"
+      $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/plugins"
 
-    task :init do
-      unless Dir.exists?(logs_dir)
-        sh "mkdir -p #{logs_dir}"
+      unless Dir.exists?($logs_dir)
+        sh "mkdir -p #{$logs_dir}"
       end
-      unless Dir.exists?(files_dir)
-        sh "mkdir -p #{files_dir}"
+      unless Dir.exists?($files_dir)
+        sh "mkdir -p #{$files_dir}"
       end
     end
 
-    task :phploc => [:init] do
-      sh "phploc --log-csv #{logs_dir}/phploc.csv #{source}"
+    task :phploc do |task|
+      metrics_init task
+      sh "phploc --log-csv #{$logs_dir}/phploc.csv #{$source}"
     end
 
-    task :pdepend => [:init] do
-      jdepend_xml = "#{logs_dir}/jdepend.xml"
-      jdepend_chart = "#{files_dir}/dependencies.svg"
-      overview_pyr = "#{files_dir}/overview-pyramid.svg"
-      sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{source}"
+    task :pdepend do |task|
+      metrics_init task
+      jdepend_xml = "#{$logs_dir}/jdepend.xml"
+      jdepend_chart = "#{$files_dir}/dependencies.svg"
+      overview_pyr = "#{$files_dir}/overview-pyramid.svg"
+      sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{$source}"
     end
 
-    task :phpmd => [:init] do
-      sh "phpmd #{source} xml design --reportfile #{logs_dir}/phpmd.xml"
-      sh "phpmd #{source} xml #{logs_dir}/phpmd.xml --reportfile #{logs_dir}/pmd.xml"
+    task :phpmd do |task|
+      metrics_init task
+      sh "phpmd #{$source} xml design --reportfile #{$logs_dir}/phpmd.xml"
+      sh "phpmd #{$source} xml #{$logs_dir}/phpmd.xml --reportfile #{$logs_dir}/pmd.xml"
     end
 
-    task :phpcs => [:init] do
-      sh "phpcs --report=checkstyle --report-file=#{logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{source} > /dev/null || true"
+    task :phpcs do |task|
+      metrics_init task
+      sh "phpcs --report=checkstyle --report-file=#{$logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{$source} > /dev/null || true"
     end
 
-    task :phpcpd => [:init] do
-      sh "phpcpd --log-pmd #{logs_dir}/pmd-cpd.xml #{source}"
+    task :phpcpd do |task|
+      metrics_init task
+      sh "phpcpd --log-pmd #{$logs_dir}/pmd-cpd.xml #{$source}"
     end
 
-    task :phpunit => [:init] do
-      sh "phpunit --coverage-clover #{logs_dir}/clover.xml --coverage-html #{files_dir} #{source} || true"
+    task :phpunit do |task|
+      metrics_init task
+      sh "phpunit --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} #{$source} || true"
     end
 
   end

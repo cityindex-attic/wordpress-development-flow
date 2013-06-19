@@ -27,7 +27,7 @@ stackato target https://api.${STACKATO_BASE_URI}
 stackato login ${STACKATO_USERNAME} --pass ${STACKATO_PASSWORD}
 stackato push ${DEPLOY_NAME} --no-prompt
 if [[ $? != 0 ]] ; then
-  stackato update ${DEPLOY_NAME} --no-prompt"
+  stackato update ${DEPLOY_NAME} --no-prompt
 fi
 
 echo "Ensuring ${DEPLOY_NAME} is started"

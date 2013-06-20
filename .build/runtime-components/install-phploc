@@ -2,7 +2,7 @@
 
 if [[ ! -f /app/app/runtimes/php/bin/phploc ]]; then
   echo "Installing phploc"
-  /app/app/runtimes/php/bin/pear config-set php_dir /app/app/runtimes/php
+  /app/app/runtimes/php/bin/pear config-set php_dir /app/app/runtimes/php/lib/php
   /app/app/runtimes/php/bin/pear config-set auto_discover 1
   /app/app/runtimes/php/bin/pear install pear.phpunit.de/phploc
 fi

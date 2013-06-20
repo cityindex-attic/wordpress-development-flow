@@ -10,10 +10,9 @@ services:
   ${name}_uploads: filesystem
 env:
   BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
+  BUILDPACK_HOOK_POST_COMPILE: "/app/app/.build/install-extra-runtime-components"
   BUILDPACK_CONFIG_TYPE: "SINGLESITE"
   DATABASE_SQL_DUMP: "/app/app/db/wordpress.master.sql"
   DATABASE_ALWAYS_REFRESH: 
     default: false
     inherit: y
-#hooks:
-#    pre-running: "/app/app/.build/provision-stackato"

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /app/app/runtimes/php/bin/pdepend ]]; then
+  echo "Installing pdepend"
+  /app/app/runtimes/php/bin/pear config-set php_dir /app/app/runtimes/php/lib/php
+  /app/app/runtimes/php/bin/pear config-set auto_discover 1
+  /app/app/runtimes/php/bin/pear channel-discover pear.pdepend.org
+  /app/app/runtimes/php/bin/pear install pdepend/PHP_Depend
+fi
+echo "pdepend:  $(/app/app/runtimes/php/bin/pdepend --version)"

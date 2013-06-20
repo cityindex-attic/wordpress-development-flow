@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /app/app/runtimes/php/bin/phpunit ]]; then
+  echo "Installing phpunit"
+  /app/app/runtimes/php/bin/pear config-set php_dir /app/app/runtimes/php/lib/php
+  /app/app/runtimes/php/bin/pear config-set auto_discover 1
+  /app/app/runtimes/php/bin/pear channel-discover nikic.github.com/pear
+  /app/app/runtimes/php/bin/pear install channel://nikic.github.com/pear/PHPParser-0.9.2
+  /app/app/runtimes/php/bin/pear install pear.phpunit.de/DbUnit
+fi
+echo "phpunit:  $(/app/app/runtimes/php/bin/phpunit --version)"

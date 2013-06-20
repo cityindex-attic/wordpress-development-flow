@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ ! -f /usr/bin/phploc ]]; then
-  echo "Installing phploc"
-  sudo pear config-set auto_discover 1
-  sudo pear install pear.phpunit.de/phploc
-  phploc --version
-fi

@@ -1,30 +1,12 @@
   require 'fileutils'
 
   ##
-  desc "Git refresh buildpack"
-  ##
-  task :refresh_buildpack do
-    task_header("Refresh Buildpack")
-
-    if Dir.exists?("/app/buildpack/.git")
-      puts "\tUpdating buildpack"
-      sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git reset --hard HEAD"
-      sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git pull"
-    else
-      puts "\tCloning buildpack"
-      sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git #{ENV['STACKATO_APP_ROOT']}/buildpack"     
-    end
-  end
-  #end Git refresh buildpack
- 
-  ##
   desc "compile buildpack"
   ##
   task :compile_buildpack do
     task_header("Compile")
-    sh "#{ENV['STACKATO_APP_ROOT']}/buildpack/bin/compile #{ENV['STACKATO_DOCUMENT_ROOT']} #{ENV['STACKATO_APP_ROOT']}/.buildpack-cache"
+    sh "#{ENV['STACKATO_APP_ROOT']}/buildpack/bin/compile #{ENV['STACKATO_DOCUMENT_ROOT']} #{ENV['STACKATO_APP_ROOT']}/fs/buildpack-cache"
   end
-  #end compile buildpack
 
   ##
   desc "stackato release"
@@ -48,8 +30,8 @@
   end
   #end verify hosting dependencies
 
-  desc "[:refresh_buildpack, :compile_buildpack]"
-  task :build => [:refresh_buildpack, :compile_buildpack]
+  desc "[:compile_buildpack]"
+  task :build => [:compile_buildpack]
   desc "[:build]"
   task :rebuild => [:build]
 

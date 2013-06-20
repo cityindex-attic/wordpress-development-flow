@@ -2,11 +2,8 @@
 require 'listen'
 require 'fileutils'
 
-puts "rsyncing /vagrant/ -> /app/app"
-`rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ /app/app/`
-
 puts "Watching /vagrant for new changes ..."
-Listen.to("/vagrant/", :ignore => /\.build|\.git|\.vagrant/, :force_polling => true, :latency => 0.5 ) do |modified, added, removed|
+Listen.to("/vagrant/", :ignore => /\.git|\.vagrant/, :force_polling => true, :latency => 0.5 ) do |modified, added, removed|
 	
 	puts "Detected new files #{added.inspect}" unless added.empty?
 	puts "Detected modifications to #{modified.inspect}" unless modified.empty?

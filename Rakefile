@@ -144,6 +144,13 @@
       sh "phpunit --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} #{$source} || true"
     end
 
+    task :phpunit_init, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "mkdir #{$source}/tests"
+      sh "cp -a /vagrant/.build/phpunit.xml.sample #{$source}/phpunit.xml"
+      sh "sed -i 's/${pluginName}/#{$name}/g #{$source}/phpunit.xml"
+    end
+
   end
 
   ##

@@ -118,6 +118,11 @@ if [ ! -f /usr/local/ti-debug/bin/dbgp ]; then
 fi
 echo "ti-debug:$(/usr/local/ti-debug/bin/dbgp --version)"
 
+if [ ! -f /usr/bin/svn ]; then
+  echo "Installing subversion"
+  sudo apt-get install -y subversion
+fi
+
 STACKATO_VERSION=1.7.2
 if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
   echo "Installing stackato version ${STACKATO_VERSION}"

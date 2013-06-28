@@ -7,5 +7,6 @@ if [[ ! -f /app/app/runtimes/php/bin/phpunit ]]; then
   /app/app/runtimes/php/bin/pear channel-discover nikic.github.com/pear
   /app/app/runtimes/php/bin/pear install channel://nikic.github.com/pear/PHPParser-0.9.2
   /app/app/runtimes/php/bin/pear install pear.phpunit.de/DbUnit
+  sudo ln -s /app/app/runtimes/php/bin/phpunit /usr/bin/phpunit
 fi
 echo "phpunit:  $(/app/app/runtimes/php/bin/phpunit --version)"

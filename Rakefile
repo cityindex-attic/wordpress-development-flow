@@ -141,14 +141,15 @@
 
     task :phpunit, :type, :name do |task, args|
       metrics_init args.type, args.name
+      if [ args.type=='plugins' ]; then
+          sh "wp scaffold plugin-tests #{args.name}" unless File.exists?("#{$source}/tests")
+      end
       sh "phpunit --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} #{$source} || true"
     end
 
     task :phpunit_init, :type, :name do |task, args|
       metrics_init args.type, args.name
-      sh "mkdir #{$source}/tests"
-      sh "cp -a /vagrant/.build/phpunit.xml.sample #{$source}/phpunit.xml"
-      sh "sed -i 's/${pluginName}/#{$name}/g #{$source}/phpunit.xml"
+      sh ".build/runtime-components/install-wp-testsuite"
     end
 
   end

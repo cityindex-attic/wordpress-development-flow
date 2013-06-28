@@ -152,6 +152,9 @@ echo "Buildpack: ${STACKATO_APP_ROOT}/buildpack"
 echo "Staging ${STACKATO_DOCUMENT_ROOT} using ${STACKATO_APP_ROOT}/buildpack/bin/compile ..."
 ${STACKATO_APP_ROOT}/buildpack/bin/compile ${STACKATO_DOCUMENT_ROOT} ${STACKATO_APP_ROOT}/fs/buildpack-cache
 
+echo "/app/app permissions"
+sudo chown -R vagrant:vagrant /app/app
+
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"
 echo "=-=-=-=-=-=-=-=-=-=-=-="

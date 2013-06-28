@@ -10,3 +10,4 @@ export VCAP_APPLICATION="{\"instance_id\":\"vagrant001\",\"instance_index\":0,\"
 
 export BUILDPACK_URL=https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
 export BUILDPACK_HOOK_POST_COMPILE=/app/app/.build/install-extra-runtime-components
+export WP_TESTS_DIR=/app/app/public/unit-tests

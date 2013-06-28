@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
-if [[ ! -f /opt/wordpress-tests ]]; then
-	cd /vagrant/public
-	svn co https://unit-tests.svn.wordpress.org/trunk wordpress-tests
-	cd wordpress-tests
-	cp -a wp-tests-config-sample.php wp-tests-config.php
-	sed '/*Path to the WordPress codebase*/d' wp-tests-config.php
-	sed '/*ABSPATH*/d' wp-tests-config.php
-	mkdir tests
-	wp -a /vagrant/.build/phpunit.bootstrap.php.sample tests/bootstrap.php
+if [[ ! -f /app/app/public/wp-content/plugins/sample-plugin ]]; then
+	cd /app/app/public/wp-content/plugins
+	git clone https://github.com/wp-cli/sample-plugin.git
+fi
+
+if [[ ! -f /app/app/public/unit-tests ]]; then
+	cd /app/app/public
+	wp core init-tests --dbname=wpcli_tests --dbuser=root --dbpass=secret_password
 fi

@@ -1,4 +1,5 @@
   require 'fileutils'
+  require 'nokogiri'
 
   ##
   desc "compile buildpack"
@@ -141,10 +142,32 @@
 
     task :phpunit, :type, :name do |task, args|
       metrics_init args.type, args.name
+      if not [ File.exists?("/app/app/public/unit-tests/") ]
+        puts "No unit-tests found. Please run:"
+        puts "    rake metrics:phpunit_init"
+        exit
+      end
+
       if [ args.type=='plugins' ]; then
           sh "wp scaffold plugin-tests #{args.name}" unless File.exists?("#{$source}/tests")
+          f = File.open("#{$source}/phpunit.xml", "a+")
+          doc = Nokogiri::XML(f)
+          unless doc.at_css('filter')
+            doc.at('phpunit') << '
+              <filter>
+                      <whitelist processUncoveredFilesFromWhitelist="true">
+                              <directory suffix=".php">/app/app/public/wp-content/plugins/' + args.name + '</directory>
+                      </whitelist>
+              </filter>
+            '
+            xml = File.open("#{$source}/phpunit.xml", "w+")
+            xml.puts doc.to_xml
+            xml.close
+          end
+          f.close
       end
-      sh "phpunit --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} #{$source} || true"
+        
+      sh "phpunit -c #{$source}/phpunit.xml --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} || true"
     end
 
     task :phpunit_init, :type, :name do |task, args|

@@ -99,21 +99,34 @@
     def metrics_init(type, name)
       puts "type: #{type}"
       puts "name: #{name}"
-      $logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/logs/#{type}"
-      $files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}"
+      $logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}/logs"
+      $files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}"
       $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
+      $bin = "/app/app/runtimes/php/bin" 
 
+      unless File.exists?("#{$source}")
+        puts "#{type} #{name} does not exist"
+        exit
+      end
       unless Dir.exists?($logs_dir)
         sh "mkdir -p #{$logs_dir}"
       end
       unless Dir.exists?($files_dir)
         sh "mkdir -p #{$files_dir}"
       end
+      unless File.exists?("#{$files_dir}/index.php")
+        sh "cp /app/app/.build/metrics.index.php #{$files_dir}/index.php"
+      end
+      unless File.exists?("#{$files_dir}/.htaccess")
+        htaccess = File.open("#{$files_dir}/.htaccess", "w+")
+        htaccess.puts "DirectoryIndex index.php"
+        htaccess.close
+      end
     end
 
     task :phploc, :type, :name do |task, args|
       metrics_init args.type, args.name
-      sh "phploc --log-csv #{$logs_dir}/phploc.csv #{$source}"
+      sh "#{$bin}/phploc --log-csv #{$logs_dir}/phploc.csv #{$source} || true"
     end
 
     task :pdepend, :type, :name do |task, args|
@@ -121,23 +134,23 @@
       jdepend_xml = "#{$logs_dir}/jdepend.xml"
       jdepend_chart = "#{$files_dir}/dependencies.svg"
       overview_pyr = "#{$files_dir}/overview-pyramid.svg"
-      sh "pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{$source}"
+      sh "#{$bin}/pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{$source}"
     end
 
     task :phpmd, :type, :name do |task, args|
       metrics_init args.type, args.name
-      sh "phpmd #{$source} xml design --reportfile #{$logs_dir}/phpmd.xml"
-      sh "phpmd #{$source} xml #{$logs_dir}/phpmd.xml --reportfile #{$logs_dir}/pmd.xml"
+      sh "#{$bin}/phpmd #{$source} xml design --reportfile #{$logs_dir}/phpmd.xml"
+      sh "#{$bin}/phpmd #{$source} xml #{$logs_dir}/phpmd.xml --reportfile #{$logs_dir}/pmd.xml"
     end
 
     task :phpcs, :type, :name do |task, args|
       metrics_init args.type, args.name
-      sh "phpcs --report=checkstyle --report-file=#{$logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{$source} > /dev/null || true"
+      sh "#{$bin}/phpcs --report=checkstyle --report-file=#{$logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{$source} > /dev/null || true"
     end
 
     task :phpcpd, :type, :name do |task, args|
       metrics_init args.type, args.name
-      sh "phpcpd --log-pmd #{$logs_dir}/pmd-cpd.xml #{$source}"
+      sh "#{$bin}/phpcpd --log-pmd #{$logs_dir}/pmd-cpd.xml #{$source}"
     end
 
     task :phpunit, :type, :name do |task, args|
@@ -156,7 +169,7 @@
             doc.at('phpunit') << '
               <filter>
                       <whitelist processUncoveredFilesFromWhitelist="true">
-                              <directory suffix=".php">/app/app/public/wp-content/plugins/' + args.name + '</directory>
+                              <directory suffix=".php">/app/app/public/wp-content/' + args.type + '/' + args.name + '</directory>
                       </whitelist>
               </filter>
             '

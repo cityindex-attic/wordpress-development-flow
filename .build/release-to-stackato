@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export STACKATO_BASE_URI="apps.labs.cityindex.com"
+export STACKATO_BASE_URI="api.apps.cityindextest5.co.uk"
 
 HELP="Call as ./release-to-stackato <deployName> <userName> <STACKATO_PASSWORD> \n =-=-=-=ENV=-=-=-=-=-= \n $(export)"
 if [[ -z "$1" ]]; then

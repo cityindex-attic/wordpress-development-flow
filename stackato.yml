@@ -13,4 +13,4 @@ env:
   BUILDPACK_HOOK_POST_COMPILE: "/app/app/.build/install-extra-runtime-components"
   BUILDPACK_CONFIG_TYPE: "SINGLESITE"
   DATABASE_SQL_DUMP: "/app/app/db/wordpress.master.sql"
-  
+  DATABASE_ALWAYS_REFRESH: true

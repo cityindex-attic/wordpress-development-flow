@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+echo "=-=-=-=ENV=-=-=-=-=-="
+export
+echo "=-=-=-=-=-=-=-=-=-=-=-="
+
+echo "Installing runtime-components"
+BUILD_FOLDER='/app/app/.build'
+source ${BUILD_FOLDER}/runtime-components/helper-functions
+
+${BUILD_FOLDER}/runtime-components/install-curl
+${BUILD_FOLDER}/runtime-components/install-phploc
+${BUILD_FOLDER}/runtime-components/install-phpdepend
+${BUILD_FOLDER}/runtime-components/install-phpmd
+${BUILD_FOLDER}/runtime-components/install-phpcs
+${BUILD_FOLDER}/runtime-components/install-phpunit
+${BUILD_FOLDER}/runtime-components/install-phpcpd
+
+echo "WARNING:  Ignoring:"
+echo " - runtime-components/install-phpdoc"
+echo " - runtime-components/install-phpdox"
+echo " - runtime-components/install-wp-testsuite"
+#${BUILD_FOLDER}/runtime-components/install-phpdoc
+#${BUILD_FOLDER}/runtime-components/install-phpdox
+#${BUILD_FOLDER}/runtime-components/install-wp-testsuite
+
+if [[ -n "${STACKATO_FILESYSTEM}" ]]; then
+	echo "linking public/wp-content/uploads to ${STACKATO_FILESYSTEM}"
+	rm -rf ${STACKATO_DOCUMENT_ROOT}/public/wp-content/uploads
+	ln -s ${STACKATO_FILESYSTEM} ${STACKATO_DOCUMENT_ROOT}/public/wp-content/uploads
+else
+	echo "STACKATO_FILESYSTEM not set, so leaving public/wp-content/uploads on ephemeral filesystem"
+fi

@@ -1,8 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
+echo "Adding ENV variables"
+if ! grep -q "/vagrant/.build/setenv.sh" /home/vagrant/.bashrc; then
+  echo -e "\nsource /vagrant/.build/setenv.sh \n" >> /home/vagrant/.bashrc
+fi
+source /vagrant/.build/setenv.sh
+
+echo "=-=-=-=ENV variables are -=-="
+export
+echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 
 function indent() {
   sed -u "s/^/       /"
 }
+
+echo "Fixing file permissions"
+sudo mkdir -p /app/app
+sudo chown -R vagrant:vagrant /app
 
 DEFAULT_LOCALE="en_US.UTF-8"
 if [[ ! "$(locale)" =~ "$DEFAULT_LOCALE" ]]; then
@@ -22,12 +35,6 @@ if [ "`tail -1 /root/.profile`" = "mesg n" ]; then
   fi
 EOH
 fi
-
-if [ ! -f /usr/bin/curl ]; then
-  echo "Installing curl"
-  sudo apt-get install curl -y
-fi
-echo "curl:    $(curl --version)" | head -n 1
 
 if [ ! -d /opt/VBoxGuestAdditions-4.2.10 ]; then
   echo "Upgrading VBoxGuestAdditions"
@@ -69,6 +76,11 @@ if [[ "$(gem query -n bundler -d | wc -l)" =~ "1" ]]; then
   sudo gem install bundle --no-ri --no-rdoc
 fi
 
+echo "Configuring build dependancies"
+pushd /vagrant
+bundle install | indent
+popd
+
 if [ ! -f /usr/bin/mysql ]; then
   echo "Installing Mysql"
   sudo debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password secret_password'
@@ -77,29 +89,15 @@ if [ ! -f /usr/bin/mysql ]; then
 fi
 echo "mysql:   $(mysql --version)"
 
+echo "Installing PHP dependancies"
+sudo apt-get update
+sudo apt-get install libcurl4-openssl-dev libbz2-dev libjpeg-dev libpng-dev autoconf -y
+
 if [ ! -f /usr/bin/git ]; then
   echo "Installing git"
   sudo apt-get install git-core -y
 fi
 echo "git:     $(git --version)"
-
-if [[ ! "$(php --version)" =~ "PHP 5.4" ]]; then
-  echo "Installing PHP5"
-  sudo apt-get install python-software-properties -y
-  sudo add-apt-repository ppa:ondrej/php5 -y
-  sudo apt-get update
-  sudo apt-get install php5 php5-mysql -y
-fi
-echo "php:     $(php -v)" | head -n 1
-
-if [[ ! -f /usr/bin/phpdoc ]]; then
-  echo "Installing phpDocumentator2"
-  sudo apt-get -y update
-  sudo apt-get -y install php5-xsl graphviz php-pear 2>/dev/null
-  sudo pear channel-discover pear.phpdoc.org
-  sudo pear install phpdoc/phpDocumentor-alpha
-fi
-echo "phpdoc:  $(phpdoc --version)"
 
 if [[ ! "$(node --version)" =~ "v0.10" ]]; then
   echo "Installing nodejs"
@@ -120,6 +118,11 @@ if [ ! -f /usr/local/ti-debug/bin/dbgp ]; then
 fi
 echo "ti-debug:$(/usr/local/ti-debug/bin/dbgp --version)"
 
+if [ ! -f /usr/bin/svn ]; then
+  echo "Installing subversion"
+  sudo apt-get install -y subversion
+fi
+
 STACKATO_VERSION=1.7.2
 if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
   echo "Installing stackato version ${STACKATO_VERSION}"
@@ -131,32 +134,26 @@ if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
 fi
 echo "stackato:$(stackato --version)"
 
-if [ ! -f /usr/bin/unison ]; then
-  sudo apt-get install unison -y
-fi
-echo "unison:  $(unison -version)"
-
-if ! grep -q "/vagrant/.build/setenv.sh" /home/vagrant/.bashrc; then
-  echo "Adding ENV variables"
-  echo -e "\nsource /vagrant/.build/setenv.sh \n" >> /home/vagrant/.bashrc
-fi
-
 echo "Clean up..."
 sudo apt-get autoremove -y | tail -n 2 | indent
 rm -f /home/vagrant/postinstall.sh
 rm -f /tmp/VBoxGuestAdditions_4.2.10.iso
 
-echo "Fixing file permissions"
-sudo mkdir -p /app/app
-sudo chown -R vagrant:vagrant /app
-
-echo "Configuring build dependancies"
-pushd /vagrant
-bundle install | indent
-popd
-
-echo "Syncing all changes from /vagrant to /app/app"
+echo "Syncing all changes from /vagrant to ${STACKATO_APP_ROOT}/app"
+rsync -a --exclude='.git*' --exclude='.vagrant' --exclude='.DS_Store' /vagrant/ ${STACKATO_APP_ROOT}/app/
 nohup /vagrant/.build/sync_app_on_host_2_app.sh > /vagrant/.build/sync_app_on_host_2_app.log &
+
+if [ ! -d ${STACKATO_APP_ROOT}/buildpack ]; then
+  echo "Fetching buildpack: ${BUILDPACK_URL}"
+  git clone ${BUILDPACK_URL} ${STACKATO_APP_ROOT}/buildpack     
+fi
+echo "Buildpack: ${STACKATO_APP_ROOT}/buildpack"
+
+echo "Staging ${STACKATO_DOCUMENT_ROOT} using ${STACKATO_APP_ROOT}/buildpack/bin/compile ..."
+${STACKATO_APP_ROOT}/buildpack/bin/compile ${STACKATO_DOCUMENT_ROOT} ${STACKATO_APP_ROOT}/fs/buildpack-cache
+
+echo "/app/app permissions"
+sudo chown -R vagrant:vagrant /app/app
 
 echo "=-=-=-=-=-=-=-=-=-=-=-="
 echo "Provisioning completed!"

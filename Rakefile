@@ -60,11 +60,15 @@
   desc "verify hosting dependencies"
   ##
   task :verify_hosting_dependencies do
-    task_header("Verifying hosting dependencies")
-    if File.exists?("/usr/bin/mysql")
-      puts "All dependencies look good"
-    else
-      fail "MySql must be installed"
+    begin
+      task_header("Verifying hosting dependencies")
+      if File.exists?("/usr/bin/mysql")
+        puts "All dependencies look good"
+      else
+        fail "MySql must be installed"
+      end
+    rescue => e
+      WPFlow_Error(e)
     end
   end
   #end verify hosting dependencies
@@ -75,21 +79,44 @@
   task :rebuild => [:build]
 
   namespace :dev_server do
+    task :foo do
+      begin
+        1/0
+      rescue => e
+        WPFlow_Error(e)
+      end
+    end
     task :server_start do
-      task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
-      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
+      begin
+        task_header("Starting server (HipHop PHP) - browse to http://localhost:4567")
+        sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Info" # 'sh' streams the cmnd's stdout
+      rescue => e
+        WPFlow_Error(e)
+      end
     end
     task :ti_debug do
-      task_header("Starting browser based debug server (ti-debug)")
-      sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
+      begin
+        task_header("Starting browser based debug server (ti-debug)")
+        sh "/usr/local/ti-debug/bin/dbgp --server *:9222 &" 
+      rescue => e
+        WPFlow_Error(e)
+      end
     end
     task :server_start_debug do
-      task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
-      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug" 
+      begin
+        task_header("Starting server (PHP 5.4 Dev server with browser based debugger) - browse to http://localhost:4567")
+        sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug" 
+      rescue => e
+        WPFlow_Error(e)
+      end
     end
     task :server_start_debug_ide do
-      task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
-      sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug_IDE" 
+      begin
+        task_header("Starting server (PHP 5.4 Dev server with XDebug) - have your IDE debugger listening on 0.0.0.0:9000 and then browse to http://localhost:4567")
+        sh "#{ENV['STACKATO_DOCUMENT_ROOT']}/bin/start.sh 4567 Debug_IDE" 
+      rescue => e
+        WPFlow_Error(e)
+      end
     end
     task :all_debug_ide => [:server_start_debug_ide] 
     task :all_debug => [:ti_debug, :server_start_debug] 
@@ -110,32 +137,29 @@
   desc "Generating wordpress documentation"                                                     
   ##                                                                                            
   task :docs, :type, :name do |t, args|                                                         
-    source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"                   
-    target = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/docs/#{args.type}/#{args.name}"                         
-    puts "Generating docs..."                                                                   
-    puts "Source: #{source}"                                                                    
-    puts "Target: #{target}"                                                                    
-                                                                                                
-    #get source switch for phpdoc                                                               
-    if File.extname(source) == ".php"                                                           
-      source_switch = "-f #{source}"                                                            
-    else                                                                                        
-      source_switch = "-d #{source}"                                                            
-    end                                                                                         
-    #end get source                                                                             
-                                                                                                
-    FileUtils.mkdir_p( target )                                                                 
-                                                                                                
-    sh "phpdoc -t #{target} #{source_switch}"                                                   
+    begin
+      source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{args.type}/#{args.name}"                   
+      target = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/docs/#{args.type}/#{args.name}"                         
+      puts "Generating docs..."                                                                   
+      puts "Source: #{source}"                                                                    
+      puts "Target: #{target}"                                                                    
+                                                                                                  
+      #get source switch for phpdoc                                                               
+      if File.extname(source) == ".php"                                                           
+        source_switch = "-f #{source}"                                                            
+      else                                                                                        
+        source_switch = "-d #{source}"                                                            
+      end                                                                                         
+      #end get source                                                                             
+                                                                                                  
+      FileUtils.mkdir_p( target )                                                                 
+                                                                                                  
+      sh "phpdoc -t #{target} #{source_switch}"                                                   
+    rescue => e
+      WPFlow_Error(e)
+    end
   end   
                                                       
-  ##                                                                                           
-  task :default => [:run] do
-    puts "Ready for the day!"
-    puts ""
-  end
-  #end default
-
   def task_header(title)
     banner = "#" * (title.length + 4)
     puts "\n#{banner}"

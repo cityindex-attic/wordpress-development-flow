@@ -32,6 +32,27 @@
   end
 
   ##
+  desc "Git refresh buildpack"
+  ##
+  task :refresh_buildpack do
+    begin
+      task_header("Refresh Buildpack")
+
+      if Dir.exists?("/app/buildpack/.git")
+        puts "\tUpdating buildpack"
+        sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git reset --hard HEAD"
+        sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git pull"
+      else
+        puts "\tCloning buildpack"
+        sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git #{ENV['STACKATO_APP_ROOT']}/buildpack"     
+      end
+    rescue => e
+      WPFlow_Error(e)
+    end
+  end
+  #end Git refresh buildpack
+ 
+  ##
   desc "compile buildpack"
   ##
   task :compile_buildpack do

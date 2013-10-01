@@ -87,7 +87,7 @@
     #end get source                                                                             
                                                                                                 
     FileUtils.mkdir_p( target )                                                                 
-                                                                                                
+    puts "phpdoc -t #{target} #{source_switch}"
     sh "phpdoc -t #{target} #{source_switch}"                                                   
   end   
 

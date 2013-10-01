@@ -9,6 +9,7 @@ BUILD_FOLDER='/app/app/.build'
 source ${BUILD_FOLDER}/runtime-components/helper-functions
 
 ${BUILD_FOLDER}/runtime-components/install-curl
+${BUILD_FOLDER}/runtime-components/install-phpdoc
 ${BUILD_FOLDER}/runtime-components/install-phploc
 ${BUILD_FOLDER}/runtime-components/install-phpdepend
 ${BUILD_FOLDER}/runtime-components/install-phpmd

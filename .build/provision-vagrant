@@ -93,6 +93,9 @@ echo "Installing PHP dependancies"
 sudo apt-get update
 sudo apt-get install libcurl4-openssl-dev libbz2-dev libjpeg-dev libpng-dev autoconf -y
 
+echo "Setting php.ini"
+sudo sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/apache2/php.ini
+
 if [ ! -f /usr/bin/git ]; then
   echo "Installing git"
   sudo apt-get install git-core -y

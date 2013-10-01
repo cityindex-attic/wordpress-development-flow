@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-if [[ ! -f /usr/bin/phpdoc ]]; then
+if [ ! -f /usr/bin/phpdoc ]; then
   echo "Installing phpDocumentator2"
   sudo apt-get -y update
   sudo apt-get -y install php5-xsl graphviz php-pear 2>/dev/null
   sudo pear channel-discover pear.phpdoc.org
-  sudo pear install phpdoc/phpDocumentor-alpha
+  sudo pear install phpdoc/phpDocumentor
 fi
-echo "phpdoc:  $(phpdoc --version)"
+echo "phpdoc: is =>  $(phpdoc --version)"

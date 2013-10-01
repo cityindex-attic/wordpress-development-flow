@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /app/app/runtimes/php/bin/phpcpd ]]; then
+  echo "Installing phpcpd"
+  /app/app/runtimes/php/bin/pear config-set php_dir /app/app/runtimes/php/lib/php
+  /app/app/runtimes/php/bin/pear config-set auto_discover 1
+  yes '' | /app/app/runtimes/php/bin/pecl install pear.phpunit.de/phpcpd
+fi
+echo "phpcpd:  $(/app/app/runtimes/php/bin/phpcpd --version)"

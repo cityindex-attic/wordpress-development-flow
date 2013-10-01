@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   
   #config.vm.synced_folder "/Users/mrdavidlaing/Projects/mrdavidlaing/stackato-buildpack-wordpress", "/app/buildpack"
   
-  config.vm.provision :shell, :path => ".build/provision.sh"
+  config.vm.provision :shell, :path => ".build/provision-vagrant"
 
 end
 

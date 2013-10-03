@@ -100,12 +100,10 @@
   task :rebuild => [:build]
 
   namespace :dev_server do
-    task :foo do
-      begin
-        1/0
-      rescue => e
-        WPFlow_Error(e)
-      end
+    task :backup_db do
+      time = Time.now.to_i
+      file = "/app/app/db/wordpress.#{time}.sql"
+      sh "mysqldump -u root -psecret_password wordpress > #{file}"
     end
     task :server_start do
       begin

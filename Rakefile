@@ -101,9 +101,14 @@
 
   namespace :dev_server do
     task :backup_db do
-      time = Time.now.to_i
-      file = "/app/app/db/wordpress.#{time}.sql"
-      sh "mysqldump -u root -psecret_password wordpress > #{file}"
+      begin
+        time = Time.now.to_i
+        file = "/app/app/db/wordpress.#{time}.sql"
+        sh "mysqldump -u root -psecret_password wordpress > #{file} 2> /dev/null"
+        puts "created #{file}"
+      rescue => e
+        WPFlow_Error(e)
+      end
     end
     task :server_start do
       begin

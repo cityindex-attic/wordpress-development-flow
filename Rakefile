@@ -158,10 +158,13 @@
 
     task :phpunit, :type, :name do |task, args|
       metrics_init args.type, args.name
-      if not [ File.exists?("/app/app/public/unit-tests/") ]
-        puts "No unit-tests found. Please run:"
-        puts "    rake metrics:phpunit_init"
-        exit
+      begin
+        if not [ File.exists?("/app/app/public/unit-tests/") ]
+          exit
+        end
+          puts "No unit-tests found. Please run:"
+          puts "    rake metrics:phpunit_init"
+       rescue
       end
 
       if [ args.type=='plugins' ]; then

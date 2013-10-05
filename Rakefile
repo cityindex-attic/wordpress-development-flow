@@ -94,6 +94,119 @@
   end
   #end verify hosting dependencies
 
+
+  ##
+  desc "Metrics"
+  ##
+  namespace :metrics do
+
+    def metrics_init(type, name)
+      puts "type: #{type}"
+      puts "name: #{name}"
+      $logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}/logs"
+      $files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}"
+      $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
+      $bin = "/app/app/runtimes/php/bin" 
+
+      unless File.exists?("#{$source}")
+        puts "#{type} #{name} does not exist"
+        exit
+      end
+      unless Dir.exists?($logs_dir)
+        sh "mkdir -p #{$logs_dir}"
+      end
+      unless Dir.exists?($files_dir)
+        sh "mkdir -p #{$files_dir}"
+      end
+      unless File.exists?("#{$files_dir}/index.php")
+        sh "cp /app/app/.build/metrics.index.php #{$files_dir}/index.php"
+      end
+      unless File.exists?("#{$files_dir}/.htaccess")
+        htaccess = File.open("#{$files_dir}/.htaccess", "w+")
+        htaccess.puts "DirectoryIndex index.php"
+        htaccess.close
+      end
+    end
+
+    task :phploc, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phploc --log-csv #{$logs_dir}/phploc.csv #{$source} || true"
+    end
+
+    task :pdepend, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      jdepend_xml = "#{$logs_dir}/jdepend.xml"
+      jdepend_chart = "#{$files_dir}/dependencies.svg"
+      overview_pyr = "#{$files_dir}/overview-pyramid.svg"
+      sh "#{$bin}/pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{$source}"
+    end
+
+    task :phpmd, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phpmd #{$source} xml design --reportfile #{$logs_dir}/phpmd.xml"
+      sh "#{$bin}/phpmd #{$source} xml #{$logs_dir}/phpmd.xml --reportfile #{$logs_dir}/pmd.xml"
+    end
+
+    task :phpcs, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phpcs --report=checkstyle --report-file=#{$logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{$source} > /dev/null || true"
+    end
+
+    task :phpcpd, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phpcpd --log-pmd #{$logs_dir}/pmd-cpd.xml #{$source}"
+    end
+
+    task :phpunit, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      if not [ File.exists?("/app/app/public/unit-tests/") ]
+        puts "No unit-tests found. Please run:"
+        puts "    rake metrics:phpunit_init"
+        exit
+      end
+
+      if [ args.type=='plugins' ]; then
+          sh "wp scaffold plugin-tests #{args.name}" unless File.exists?("#{$source}/tests")
+          f = File.open("#{$source}/phpunit.xml", "a+")
+          doc = Nokogiri::XML(f)
+          unless doc.at_css('filter')
+            doc.at('phpunit') << '
+              <filter>
+                      <whitelist processUncoveredFilesFromWhitelist="true">
+                              <directory suffix=".php">/app/app/public/wp-content/' + args.type + '/' + args.name + '</directory>
+                      </whitelist>
+              </filter>
+            '
+            xml = File.open("#{$source}/phpunit.xml", "w+")
+            xml.puts doc.to_xml
+            xml.close
+          end
+          f.close
+      end
+        
+      sh "phpunit -c #{$source}/phpunit.xml --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} || true"
+    end
+
+    task :phpunit_init, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh ".build/runtime-components/install-wp-testsuite"
+    end
+
+  end
+
+  ##
+  desc "Metrics: phploc, pdepend, phpmd, phpcs, phpcpd, phpunit"
+  ##
+  task :metrics, :type, :name do |t, args|
+    Rake::Task["metrics:phploc"].invoke( args.type, args.name )
+    Rake::Task["metrics:pdepend"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpmd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcs"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcpd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpunit"].invoke( args.type, args.name )
+  end
+
+
   desc "[:refresh_buildpack, :compile_buildpack]"
   task :build => [:refresh_buildpack, :compile_buildpack]
   desc "[:build]"

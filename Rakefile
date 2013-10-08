@@ -19,18 +19,6 @@
     def bg_magenta;     "\033[45m#{self}\033[0m" end
   end
 
-  task :foo do
-      puts "bling blang"
-      1/0
-  end
-  task :bar do |t, args|
-    begin
-      1/0
-    rescue => e
-      WPFlow_Error(e)
-    end
-  end
-
   ##
   desc "Git refresh buildpack"
   ##
@@ -107,23 +95,27 @@
       $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
       $bin = "/app/app/runtimes/php/bin" 
 
-      unless File.exists?("#{$source}")
-        puts "#{type} #{name} does not exist"
-        exit
-      end
-      unless Dir.exists?($logs_dir)
-        sh "mkdir -p #{$logs_dir}"
-      end
-      unless Dir.exists?($files_dir)
-        sh "mkdir -p #{$files_dir}"
-      end
-      unless File.exists?("#{$files_dir}/index.php")
-        sh "cp /app/app/.build/metrics.index.php #{$files_dir}/index.php"
-      end
-      unless File.exists?("#{$files_dir}/.htaccess")
-        htaccess = File.open("#{$files_dir}/.htaccess", "w+")
-        htaccess.puts "DirectoryIndex index.php"
-        htaccess.close
+      begin
+        unless File.exists?("#{$source}")
+          puts "#{type} #{name} does not exist"
+          exit
+        end
+        unless Dir.exists?($logs_dir)
+          sh "mkdir -p #{$logs_dir}"
+        end
+        unless Dir.exists?($files_dir)
+          sh "mkdir -p #{$files_dir}"
+        end
+        unless File.exists?("#{$files_dir}/index.php")
+          sh "cp /app/app/.build/metrics.index.php #{$files_dir}/index.php"
+        end
+        unless File.exists?("#{$files_dir}/.htaccess")
+          htaccess = File.open("#{$files_dir}/.htaccess", "w+")
+          htaccess.puts "DirectoryIndex index.php"
+          htaccess.close
+        end
+      rescue => e
+        WPFlow_Error(e)
       end
     end
 
@@ -159,31 +151,36 @@
     task :phpunit, :type, :name do |task, args|
       metrics_init args.type, args.name
       begin
-        if not [ File.exists?("/app/app/public/unit-tests/") ]
-          exit
+        if not [ File.exists?("/app/app/public/unit-tests") ]
+          1/0
         end
-          puts "No unit-tests found. Please run:"
-          puts "    rake metrics:phpunit_init"
        rescue
+          puts "No unit tests found. Please run:"
+          puts "    rake metrics:phpunit_init"
+          exit
       end
 
       if [ args.type=='plugins' ]; then
-          sh "wp scaffold plugin-tests #{args.name}" unless File.exists?("#{$source}/tests")
-          f = File.open("#{$source}/phpunit.xml", "a+")
-          doc = Nokogiri::XML(f)
-          unless doc.at_css('filter')
-            doc.at('phpunit') << '
-              <filter>
-                      <whitelist processUncoveredFilesFromWhitelist="true">
-                              <directory suffix=".php">/app/app/public/wp-content/' + args.type + '/' + args.name + '</directory>
-                      </whitelist>
-              </filter>
-            '
-            xml = File.open("#{$source}/phpunit.xml", "w+")
-            xml.puts doc.to_xml
-            xml.close
+          begin
+            sh "wp scaffold plugin-tests #{args.name} --path='/app/app/public'" unless File.exists?("#{$source}/tests")
+            f = File.open("#{$source}/phpunit.xml", "a+")
+            doc = Nokogiri::XML(f)
+            unless doc.at_css('filter')
+              doc.at('phpunit') << '
+                <filter>
+                        <whitelist processUncoveredFilesFromWhitelist="true">
+                                <directory suffix=".php">/app/app/public/wp-content/' + args.type + '/' + args.name + '</directory>
+                        </whitelist>
+                </filter>
+              '
+              xml = File.open("#{$source}/phpunit.xml", "w+")
+              xml.puts doc.to_xml
+              xml.close
+            end
+          rescue => e
+            WPFlow_Error(e)
           end
-          f.close
+          #f.close
       end
         
       sh "phpunit -c #{$source}/phpunit.xml --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} || true"

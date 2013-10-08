@@ -84,6 +84,11 @@
   end
   #end verify hosting dependencies
 
+  desc "[:refresh_buildpack, :compile_buildpack]"
+  task :build => [:refresh_buildpack, :compile_buildpack]
+  desc "[:build]"
+  task :rebuild => [:build]
+
   ##
   desc "Metrics"
   ##
@@ -217,11 +222,6 @@
     Rake::Task["metrics:phpcpd"].invoke( args.type, args.name )
     Rake::Task["metrics:phpunit"].invoke( args.type, args.name )
   end
-
-desc "[:refresh_buildpack, :compile_buildpack]"
-  task :build => [:refresh_buildpack, :compile_buildpack]
-  desc "[:build]"
-  task :rebuild => [:build]
 
   namespace :dev_server do
     task :backup_db do

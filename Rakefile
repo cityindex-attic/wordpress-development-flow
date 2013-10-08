@@ -7,9 +7,11 @@
     puts "\n *********************** ".bg_magenta
     puts " | WP Development Flow | ".bg_magenta
     puts " *********************** \n".bg_magenta
+    puts e
     puts "Ruby rake error:"
     puts "  Error: ".red.bg_magenta + e.message.bg_magenta
     puts "  In line: " + line
+    exit
   end
 
   # colorize stdOut.
@@ -17,18 +19,6 @@
   class String
     def red;            "\033[31m#{self}\033[0m" end
     def bg_magenta;     "\033[45m#{self}\033[0m" end
-  end
-
-  task :foo do
-      puts "bling blang"
-      1/0
-  end
-  task :bar do |t, args|
-    begin
-      1/0
-    rescue => e
-      WPFlow_Error(e)
-    end
   end
 
   ##
@@ -94,7 +84,141 @@
   end
   #end verify hosting dependencies
 
-  desc "[:refresh_buildpack, :compile_buildpack]"
+  ##
+  desc "Metrics"
+  ##
+  namespace :metrics do
+
+    def metrics_init(type, name)
+      puts "type: #{type}"
+      puts "name: #{name}"
+      $logs_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}/logs"
+      $files_dir = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/metrics/#{type}/#{name}"
+      $source = "#{ENV['STACKATO_DOCUMENT_ROOT']}/public/wp-content/#{type}/#{name}"
+      $bin = "/app/app/runtimes/php/bin" 
+
+      begin
+        unless File.exists?("#{$source}")
+          puts "#{type} #{name} does not exist"
+          exit
+        end
+        unless Dir.exists?($logs_dir)
+          sh "mkdir -p #{$logs_dir}"
+        end
+        unless Dir.exists?($files_dir)
+          sh "mkdir -p #{$files_dir}"
+        end
+        unless Dir.exists?("#{}{$files_dir}/clover")
+          sh "mkdir -p #{$files_dir}/clover"
+        end
+        unless File.exists?("#{$files_dir}/index.php")
+          sh "cp /app/app/.build/metrics.index.php #{$files_dir}/index.php"
+        end
+        unless File.exists?("#{$files_dir}/.htaccess")
+          htaccess = File.open("#{$files_dir}/.htaccess", "w+")
+          htaccess.puts "DirectoryIndex index.php"
+          htaccess.close
+        end
+      rescue => e
+        WPFlow_Error(e)
+      end
+    end
+
+    task :phploc, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phploc --log-csv #{$logs_dir}/phploc.csv #{$source} || true"
+    end
+
+    task :pdepend, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      jdepend_xml = "#{$logs_dir}/jdepend.xml"
+      jdepend_chart = "#{$files_dir}/dependencies.svg"
+      overview_pyr = "#{$files_dir}/overview-pyramid.svg"
+      sh "#{$bin}/pdepend --jdepend-xml=#{jdepend_xml} --jdepend-chart=#{jdepend_chart} --overview-pyramid=#{overview_pyr} #{$source}"
+    end
+
+    task :phpmd, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phpmd #{$source} xml design --reportfile #{$logs_dir}/phpmd.xml"
+      sh "#{$bin}/phpmd #{$source} xml #{$logs_dir}/phpmd.xml --reportfile #{$logs_dir}/pmd.xml"
+    end
+
+    task :phpcs, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phpcs --report=checkstyle --report-file=#{$logs_dir}/checkstyle.xml --standard=WordPress -vvv -l -n #{$source} > /dev/null || true"
+    end
+
+    task :phpcpd, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh "#{$bin}/phpcpd --log-pmd #{$logs_dir}/pmd-cpd.xml #{$source}"
+    end
+
+    task :phpunit, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      begin
+        if not [ File.exists?("/app/app/public/unit-tests") ]
+          1/0
+        end
+       rescue
+          puts "No unit tests found. Please run:"
+          puts "    rake metrics:phpunit_init"
+          exit
+      end
+
+      if [ args.type=='plugins' ]; then
+          begin
+            sh "wp scaffold plugin-tests #{args.name} --path='/app/app/public'" unless File.exists?("#{$source}/tests")
+            f = File.open("#{$source}/phpunit.xml", "a+")
+            doc = Nokogiri::XML(f)
+            unless doc.at_css('filter')
+              doc.at('phpunit') << '
+                <filter>
+                        <whitelist>
+                                <directory suffix=".php">/app/app/public/wp-content/' + args.type + '/' + args.name + '</directory>
+                                <exclude>
+                                  <directory suffix=".php">../../../unit-tests</directory>
+                                  <directory suffix=".php">./tests</directory>
+                                </exclude>
+                        </whitelist>
+                </filter>
+                <logging>
+                        <log type="coverage-html" target="/app/app/public/metrics/plugins/foo/clover/" charset="UTF-8" yui="true" highlight="true"/>
+                        <log type="coverage-clover" target="/app/app/public/metrics/' + args.type + '/' + args.name + '/logs/clover.xml"/>
+                </logging>
+              '
+              xml = File.open("#{$source}/phpunit.xml", "w+")
+              xml.puts doc.to_xml
+              xml.close
+            end
+          rescue => e
+            WPFlow_Error(e)
+          end
+          #f.close
+      end
+        
+      sh "phpunit -c #{$source}/phpunit.xml || true"
+    end
+
+    task :phpunit_init, :type, :name do |task, args|
+      metrics_init args.type, args.name
+      sh ".build/runtime-components/install-wp-testsuite"
+    end
+
+  end
+
+  ##
+  desc "Metrics: phploc, pdepend, phpmd, phpcs, phpcpd, phpunit"
+  ##
+  task :metrics, :type, :name do |t, args|
+    Rake::Task["metrics:phploc"].invoke( args.type, args.name )
+    Rake::Task["metrics:pdepend"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpmd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcs"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpcpd"].invoke( args.type, args.name )
+    Rake::Task["metrics:phpunit"].invoke( args.type, args.name )
+  end
+
+desc "[:refresh_buildpack, :compile_buildpack]"
   task :build => [:refresh_buildpack, :compile_buildpack]
   desc "[:build]"
   task :rebuild => [:build]

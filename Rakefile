@@ -7,9 +7,11 @@
     puts "\n *********************** ".bg_magenta
     puts " | WP Development Flow | ".bg_magenta
     puts " *********************** \n".bg_magenta
+    puts e
     puts "Ruby rake error:"
     puts "  Error: ".red.bg_magenta + e.message.bg_magenta
     puts "  In line: " + line
+    exit
   end
 
   # colorize stdOut.
@@ -106,6 +108,9 @@
         unless Dir.exists?($files_dir)
           sh "mkdir -p #{$files_dir}"
         end
+        unless Dir.exists?("#{}{$files_dir}/clover")
+          sh "mkdir -p #{$files_dir}/clover"
+        end
         unless File.exists?("#{$files_dir}/index.php")
           sh "cp /app/app/.build/metrics.index.php #{$files_dir}/index.php"
         end
@@ -168,10 +173,18 @@
             unless doc.at_css('filter')
               doc.at('phpunit') << '
                 <filter>
-                        <whitelist processUncoveredFilesFromWhitelist="true">
+                        <whitelist>
                                 <directory suffix=".php">/app/app/public/wp-content/' + args.type + '/' + args.name + '</directory>
+                                <exclude>
+                                  <directory suffix=".php">../../../unit-tests</directory>
+                                  <directory suffix=".php">./tests</directory>
+                                </exclude>
                         </whitelist>
                 </filter>
+                <logging>
+                        <log type="coverage-html" target="/app/app/public/metrics/plugins/foo/clover/" charset="UTF-8" yui="true" highlight="true"/>
+                        <log type="coverage-clover" target="/app/app/public/metrics/' + args.type + '/' + args.name + '/logs/clover.xml"/>
+                </logging>
               '
               xml = File.open("#{$source}/phpunit.xml", "w+")
               xml.puts doc.to_xml
@@ -183,7 +196,7 @@
           #f.close
       end
         
-      sh "phpunit -c #{$source}/phpunit.xml --coverage-clover #{$logs_dir}/clover.xml --coverage-html #{$files_dir} || true"
+      sh "phpunit -c #{$source}/phpunit.xml || true"
     end
 
     task :phpunit_init, :type, :name do |task, args|

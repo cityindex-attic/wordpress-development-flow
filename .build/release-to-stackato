@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+export STACKATO_BASE_URI="apps.cityindextest5.co.uk"
+
+HELP="Call as ./release-to-stackato <deployName> <userName> <STACKATO_PASSWORD> \n =-=-=-=ENV=-=-=-=-=-= \n $(export)"
+if [[ -z "$1" ]]; then
+  echo "Error: You must pass a valid <deployName> "
+  echo "$HELP"
+  exit 1
+fi
+DEPLOY_NAME="$1"
+if [[ -z "$2" ]]; then
+  echo "Error: You must pass a valid <userName> "
+  echo "$HELP"
+  exit 2
+fi
+STACKATO_USERNAME="$2"
+if [[ -z "$3" ]]; then
+  echo "Error: You must pass a valid <STACKATO_PASSWORD> "
+  echo "$HELP"
+  exit 2
+fi
+STACKATO_PASSWORD="$3"
+
+echo "Deploying to url: http://${DEPLOY_NAME}.${STACKATO_BASE_URI}"
+stackato target https://api.${STACKATO_BASE_URI}
+stackato login ${STACKATO_USERNAME} --pass ${STACKATO_PASSWORD} --group labs-team
+stackato push ${DEPLOY_NAME} --no-prompt
+if [[ $? != 0 ]] ; then
+  stackato update ${DEPLOY_NAME} --no-prompt
+fi
+
+echo "Ensuring ${DEPLOY_NAME} is started"
+stackato start ${DEPLOY_NAME}
+
+echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+echo "Finished releasing to Stackato"
+echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"

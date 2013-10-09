@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /usr/bin/phpdox ]]; then
+  echo "Installing phpdox"
+  sudo wget -P /opt http://phpdox.de/phpdox-0.5.phar
+  sudo chown -R vagrant:vagrant /opt/phpdox-0.5.phar
+  sudo chmod 775 /opt/phpdox-0.5.phar
+  ln -s /opt/phpdox-0.5.phar /usr/bin/phpdox
+fi

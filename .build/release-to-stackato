@@ -24,7 +24,7 @@ STACKATO_PASSWORD="$3"
 
 echo "Deploying to url: http://${DEPLOY_NAME}.${STACKATO_BASE_URI}"
 stackato target https://api.${STACKATO_BASE_URI}
-stackato login ${STACKATO_USERNAME} --pass ${STACKATO_PASSWORD} --group labs-team
+stackato login ${STACKATO_USERNAME} --pass ${STACKATO_PASSWORD}
 stackato push ${DEPLOY_NAME} --no-prompt
 if [[ $? != 0 ]] ; then
   stackato update ${DEPLOY_NAME} --no-prompt

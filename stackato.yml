@@ -2,7 +2,7 @@ name: wordpress-development-flow
 instances: 1
 framework:
   type: buildpack
-mem: 1.5G
+mem: 256
 ignores: [".git*", ".vagrant", "bin", "config", "logs","public/wp-*.php", "public/wp-includes", "public/wp-admin", "run", "runtimes"]
 services:
   ${name}-cache: filesystem

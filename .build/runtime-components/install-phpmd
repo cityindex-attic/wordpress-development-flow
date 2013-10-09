@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ ! -f /app/app/runtimes/php/bin/phpmd ]]; then
+  echo "Installing phpmd"
+  /app/app/runtimes/php/bin/pear config-set php_dir /app/app/runtimes/php/lib/php
+  /app/app/runtimes/php/bin/pear config-set auto_discover 1
+  /app/app/runtimes/php/bin/pear  channel-discover pear.phpmd.org
+  /app/app/runtimes/php/bin/pear  channel-discover pear.pdepend.org
+  /app/app/runtimes/php/bin/pear  install --alldeps phpmd/PHP_PMD
+fi
+echo "phpmd:  $(/app/app/runtimes/php/bin/phpmd --version)"

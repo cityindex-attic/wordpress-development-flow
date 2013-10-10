@@ -5,11 +5,11 @@ framework:
 mem: 1.5G
 ignores: [".git*", ".vagrant", "bin", "config", "logs","public/wp-*.php", "public/wp-includes", "public/wp-admin", "run", "runtimes"]
 services:
-  ${name}-cache: filesystem
+  ${name}_cache: filesystem
   ${name}_mysql: mysql
   ${name}_uploads: filesystem
 env:
-  BUILDPACK_URL: git://github.com/mrdavidlaing/stackato-buildpack-wordpress.git
+  BUILDPACK_URL: "-b fix-ci-wdf git://github.com/daithi-coombes/stackato-buildpack-wordpress.git"
   BUILDPACK_HOOK_POST_COMPILE: "/app/app/.build/install-extra-runtime-components"
   BUILDPACK_CONFIG_TYPE: "SINGLESITE"
   DATABASE_SQL_DUMP: "/app/app/db/wordpress.master.sql"

@@ -34,7 +34,7 @@
         sh "cd #{ENV['STACKATO_APP_ROOT']}/buildpack && git pull"
       else
         puts "\tCloning buildpack"
-        sh "git clone https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git #{ENV['STACKATO_APP_ROOT']}/buildpack"     
+        sh "git clone -b fix-ci-wdf https://github.com/mrdavidlaing/stackato-buildpack-wordpress.git #{ENV['STACKATO_APP_ROOT']}/buildpack"     
       end
     rescue => e
       WPFlow_Error(e)

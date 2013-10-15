@@ -31,7 +31,7 @@
   ##
   task :release, :deployName, :username, :password do |t, args|
     task_header("Release")
-    stackatoBaseUri = "apps.labs.cityindex.com"
+    stackatoBaseUri = ENV['STACKATO_BASE_URI']
     puts "deploying to url: http://#{args[:deployName]}.#{stackatoBaseUri}"
     sh "stackato target https://api.#{stackatoBaseUri}"
     sh "stackato login #{args[:username]} --pass #{args[:password]}"

@@ -120,7 +120,7 @@ if [ ! -f /usr/local/ti-debug/bin/dbgp ]; then
 fi
 echo "ti-debug:$(/usr/local/ti-debug/bin/dbgp --version)"
 
-STACKATO_VERSION=1.7.2
+STACKATO_VERSION=1.7.4
 if [[ ! "$(stackato --version)" =~ "${STACKATO_VERSION}" ]]; then
   echo "Installing stackato version ${STACKATO_VERSION}"
   sudo curl -k --location -o /tmp/stackato.zip http://downloads.activestate.com/stackato/client/v${STACKATO_VERSION}/stackato-${STACKATO_VERSION}-linux-glibc2.3-x86_64.zip 
